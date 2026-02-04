@@ -50,3 +50,7 @@ Create a Next.js application containing a registration form for a new Pokemon tr
 
 - [Pokemon API](https://pokeapi.co/docs/v2#pokemon)
 - [Time API](https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Warsaw)
+
+# Development notes
+- [x] add favicon
+- [ ] add metadata for seo

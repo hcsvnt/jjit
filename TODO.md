@@ -23,17 +23,14 @@ wiek trenera, oraz jeden początkowy Pokemon). wg. projektu dostępnego TUTAJ.
 - Pole `Pokemon name` powinno być polem typu autocomplete i zachowywać się w następujący sposób:
     - W momencie kiedy użytkownik zaczyna wpisywać nazwę, autocomplete wysyła zapytanie do endpointa /api/search?name=<wartość inputa>, który zwraca propozycje początkowych Pokemonów dla trenera;
     - Endpoint musi zostać zaimplementowany przez Ciebie jako API Route. Jako bazę wykorzystaj dostarczony plik `.json`;
-    - Proponowane pokemony powinny być wybierane techniką fuzzy search -
-      możesz wykorzystać do tego bibliotekę Fuse.js.
-    - Pamiętaj o debounce i cache - funkcjonalność ma działać tak, jakby miała
-      iść na środowisko produkcyjne;
-    - W momencie wyboru Pokemona z listy, jego imię zostaje wybrane jako
-      wartość inputa, a jego podgląd wyświetla się w okienku niżej;
+    - Proponowane pokemony powinny być wybierane techniką fuzzy search - możesz wykorzystać do tego bibliotekę Fuse.js.
+    - Pamiętaj o debounce i cache - funkcjonalność ma działać tak, jakby miała iść na środowisko produkcyjne;
+    - W momencie wyboru Pokemona z listy, jego imię zostaje wybrane jako wartość inputa, a jego podgląd wyświetla się w okienku niżej;
     - Dane o wybranym Pokemonie możesz pobrać z PokeAPI (patrz linki na dole strony);
 - Przycisk Submit powinien zachowywać się w następujący sposób:
     - W przypadku nieprawidłowych wartości w formularzu nie rób nic i pokaż
       informacje o błędach pod polami formularza;
-        - W przypadku prawidłowych pól wyświetl okienko z napisem Sukces! i przyciskiem resetu formularza;
+    - W przypadku prawidłowych pól wyświetl okienko z napisem Sukces! i przyciskiem resetu formularza;
 - Przycisk Reset powinien resetować cały formularz;
 - Całość pokryj odpowiednimi testami;
 - Nie zapomnij dostarczyć nam README, w którym opisane będzie jak uruchomić Twój kod.
@@ -60,4 +57,4 @@ wiek trenera, oraz jeden początkowy Pokemon). wg. projektu dostępnego TUTAJ.
 
 - [Pokemon API](https://pokeapi.co/docs/v2#pokemon)
 - [Time API](https://www.timeapi.io/api/Time/current/zone?timeZone=Europe/Warsaw)
-`
+  `
