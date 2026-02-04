@@ -7,7 +7,7 @@ export const schema = z.object({
         .number()
         .min(16, 'too young to be a Pokemon Teacher')
         .max(99, 'pokemon teachers retire at 100'),
-    pokemon: z.string().trim().min(1, 'must select a pokemon'), // todo: this is searchable from data
+    pokemon: z.number().int().positive('must be a valid Pokemon ID'),
 });
 
 export type FormSubmission = z.infer<typeof schema>;
