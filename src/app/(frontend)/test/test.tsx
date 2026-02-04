@@ -1,18 +1,18 @@
-export default function Test({
+import TestClient from './test.client';
+
+const url = process.env.SERVER_URL || 'http://localhost:3000';
+
+export default async function Test({
     title,
     children,
-    onClick,
 }: {
     title: string;
     children: React.ReactNode;
-    onClick: () => void;
 }) {
     return (
         <div>
             <h1>{title}</h1>
-            <button type="button" onClick={onClick}>
-                Click me
-            </button>
+            <TestClient />
             <div>{children}</div>
         </div>
     );

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import Test from '@/app/test/test';
+import Test from '@/app/(frontend)/test/test';
 
 describe('Test the Test Test', () => {
     it('renders title, button and children', () => {
