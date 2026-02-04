@@ -5,7 +5,6 @@ const withBundleAnalyzer = initializeBundleAnalyzer({
     enabled: process.env.ANALYZE_BUNDLE === 'true',
 });
 
-
 const nextConfig: NextConfig = {
     reactProductionProfiling: false,
     reactStrictMode: true,

@@ -1,17 +1,15 @@
 import localFont from 'next/font/local';
 
-
 const IBMFont = localFont({
     src: [
         {
             path: '../assets/IBM_VGA.woff',
             weight: '400',
-            style: 'normal'
+            style: 'normal',
         },
-
     ],
     variable: '--font-primary',
-    fallback: ['monospace']
+    fallback: ['monospace'],
 });
 
 const fonts = { IBMFont };
