@@ -3,8 +3,12 @@ import { ZodError } from 'zod';
 import type { Pokemon } from '@/types';
 import { schema } from "./schema";
 
-const { POKEAPI_BASE_URL } = process.env;
-
+/**
+ * Handles POST requests to fetch detailed information about a Pokémon.
+ * Expects a JSON body with a 'pokemon' field (number).
+ * @param request - The incoming NextRequest object.
+ * @returns A NextResponse containing the Pokémon details or an error message.
+ */
 export async function POST(request: NextRequest) {
 
     try {
@@ -28,7 +32,17 @@ export async function POST(request: NextRequest) {
 }
 
 
+/**
+ * Fetches detailed information about a Pokémon from the PokeAPI.
+ * @param pokemon - The Pokémon ID.
+ * @returns A promise that resolves to the Pokémon details.
+ * @throws An error if the upstream API request fails.
+ */
 async function fetchDetails(pokemon: number): Promise<Pokemon> {
+    const { POKEAPI_BASE_URL } = process.env;
+    if (!POKEAPI_BASE_URL) {
+        throw new Error('POKEAPI_BASE_URL is not configured');
+    }
     const query = encodeURIComponent(pokemon);
     const url = new URL(POKEAPI_BASE_URL + query);
     const res = await fetch(url.toString());
@@ -38,6 +52,13 @@ async function fetchDetails(pokemon: number): Promise<Pokemon> {
     return res.json();
 }
 
+
+/**
+ * Validates and extracts the Pokémon ID from the input.
+ * @param input - The input to validate.
+ * @returns The validated Pokémon ID.
+ * @throws ZodError if validation fails.
+ */
 function getValidatedInput(input: unknown): number {
     const validatedData = schema.safeParse(input);
     if (!validatedData.success) {
@@ -45,3 +66,5 @@ function getValidatedInput(input: unknown): number {
     }
     return validatedData.data.pokemon;
 }
+
+export { fetchDetails, getValidatedInput };

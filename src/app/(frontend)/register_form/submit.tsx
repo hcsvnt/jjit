@@ -4,6 +4,13 @@ import { z } from 'zod';
 import type { ActionResponse, FormSubmission } from './schema';
 import { schema } from './schema';
 
+/**
+ * Handles the submission of the registration form.
+ * Validates the input data and performs business logic.
+ * @param _prevState - The previous state of the action (not used, but required by React).
+ * @param formData - The submitted form data.
+ * @returns An ActionResponse indicating success or failure.
+ */
 export async function submit(
     _prevState: ActionResponse<FormSubmission>,
     formData: FormData,
@@ -31,8 +38,12 @@ export async function submit(
         }
     }
 
+    /**
+     * Business logic placeholder.
+     * In a real application, this could involve saving data to a database,
+     * sending confirmation emails, etc.
+     */
     (function doBusinessLogic(data: FormSubmission) {
-        // Placeholder for business logic, e.g., saving to a database
         console.log('Processing submission for:', data);
     })(validatedData.data);
 
