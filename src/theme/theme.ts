@@ -1,5 +1,11 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/Button' {
+    interface ButtonPropsVariantOverrides {
+        primary: true;
+        soft: true;
+    }
+}
 
 /**
  * These need to be kept in sync with the CSS variables defined in src/app/(frontend)/globals.css
@@ -9,7 +15,7 @@ const colors = {
     foreground: '#000000',
     primary: '#9747ff',
     primaryDark: '#7135bf',
-    primaryLight: '#9747ff',
+    primaryLight: '#9747FF40',
     grey100: '#2a2a2a',
     grey200: '#7f7f7f',
     grey300: '#e4e4e4',
@@ -45,39 +51,106 @@ export const theme = createTheme({
     },
     typography: {
         fontFamily: 'var(--font-primary)',
+        fontSize: 14,
     },
     components: {
-        MuiTextField: {
-            styleOverrides: {
-                root: {
-                    '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                            borderColor: colors.grey300,
-                        },
-                        '&:hover fieldset': {
-                            borderColor: colors.grey200,
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: colors.primary,
-                        },
-                    },
-                },
-            },
-        },
         MuiButton: {
             styleOverrides: {
                 root: {
+                    lineHeight: '20px',
+                    padding: '10px 24px',
+                    borderRadius: 'var(--radius)',
                     textTransform: 'none',
-                    fontSize: '1rem',
+                    variants: [
+                        {
+                            props: { variant: 'primary' },
+                            style: {
+                                color: colors.background,
+                                backgroundColor: colors.primary,
+                                '&:hover': {
+                                    backgroundColor: colors.primaryDark,
+                                },
+                                '&:focus': {
+                                    backgroundColor: colors.primaryDark,
+                                    boxShadow: 'var(--shadow-focus)',
+                                },
+                            },
+                        },
+                        {
+                            props: { variant: 'soft' },
+                            style: {
+                                backgroundColor: colors.grey400,
+                                '&:hover': {
+                                    backgroundColor: colors.grey300,
+                                },
+                                '&:focus': {
+                                    backgroundColor: colors.grey300,
+                                    boxShadow: 'var(--shadow-focus)',
+                                },
+                            },
+                        },
+                    ],
                 },
-                contained: {
-                    backgroundColor: colors.primary,
-                    '&:hover': {
-                        backgroundColor: colors.primaryDark,
+            },
+        },
+
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    fontSize: '12px',
+                    lineHeight: '20px',
+                    height: 'initial',
+                    padding: '4px 8px',
+                    borderRadius: 'var(--radius-full)',
+                    backgroundColor: colors.primaryLight,
+                    color: colors.foreground,
+
+                    'span.MuiChip-label': {
+                        padding: 0,
                     },
                 },
             },
         },
+
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    "& .MuiOutlinedInput-root": {
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                            border: '1px solid var(--color-primary)',
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: '1px solid var(--color-primary)',
+                            boxShadow: 'var(--shadow-focus)',
+                        }
+                    },
+
+                    'div.MuiInputBase-root': {
+                        fontSize: '14px',
+                    },
+
+                    'p.MuiFormHelperText-root': {
+                        marginLeft: 0,
+                        color: colors.foreground
+                    }
+
+
+
+                    // '& .MuiOutlinedInput-root': {
+                    //     '& fieldset': {
+                    //         borderColor: colors.grey300,
+                    //     },
+                    //     '&:hover fieldset': {
+                    //         borderColor: colors.grey200,
+                    //     },
+                    //     '&.Mui-focused fieldset': {
+                    //         borderColor: colors.primary,
+                    //     },
+                    // },
+                },
+            },
+        },
+
         MuiAutocomplete: {
             styleOverrides: {
                 paper: {

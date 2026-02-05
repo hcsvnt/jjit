@@ -87,3 +87,4 @@ but here the backend lookup is quite fast and cached, so we can afford better UX
 - [x] add favicon
 - [ ] not explicitly required and missing in the design file, but adjust for mobile devices
 - [ ] add metadata for seo
+- [ ] default letter spacing seems off

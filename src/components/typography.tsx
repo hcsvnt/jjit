@@ -1,0 +1,39 @@
+import MuiTypography from '@mui/material/Typography';
+
+type Props = React.ComponentProps<typeof MuiTypography>;
+
+export function P({ children, ...props }: Props) {
+    return (
+        <MuiTypography variant="body1" component="p">
+            {children}
+        </MuiTypography>
+    );
+}
+
+export function Span({ children, ...props }: Props) {
+    return (
+        <MuiTypography variant="body1" component="span" {...props}>
+            {children}
+        </MuiTypography>
+    );
+}
+
+export function Heading({
+    level,
+    size,
+    children,
+}: {
+    level: 1 | 2 | 3;
+    size: 1 | 2 | 3;
+    children: React.ReactNode;
+}) {
+    return (
+        <MuiTypography
+            component={`h${level}`}
+            variant={`h${size}`}
+            // gutterBottom
+        >
+            {children}
+        </MuiTypography>
+    );
+}
