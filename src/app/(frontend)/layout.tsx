@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import fonts from '@/utils/fonts';
+import { MuiThemeProvider } from '@/providers/theme-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -20,7 +21,9 @@ export default function RootLayout({
                 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
                 <link rel="manifest" href="/site.webmanifest" />
             </head>
-            <body className={`${fonts.IBMFont.variable}`}>{children}</body>
+            <body className={`${fonts.IBMFont.variable}`}>
+                <MuiThemeProvider>{children}</MuiThemeProvider>
+            </body>
         </html>
     );
 }

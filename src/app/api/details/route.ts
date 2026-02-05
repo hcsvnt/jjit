@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import type { Pokemon } from '@/types';
 import { schema } from "./schema";
