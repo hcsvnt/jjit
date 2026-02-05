@@ -38,19 +38,14 @@ const pokemonData = await readPokemonJSON(FILEPATH);
 const pokeFuse = createPokeFuse(pokemonData);
 const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
 
-// read json file with pokemon data
-// use data to create fuse instance
-// get search query from request body and validate it
-// check cache for existing results
-// if none - perform search using fuse
-// return results and cache them
 export async function POST(request: NextRequest) {
     console.log('Received request to /api/search', request);
 
     try {
         const body = await request.json();
         const query = getValidatedInput(body);
-        const results = getPokemons(query, pokeFuse);
+        const results = getPokemons(query, pokeFuse, cache);
+
         return NextResponse.json({ results }, { status: 200 });
     } catch (err) {
         if (err instanceof ZodError) {
@@ -62,14 +57,63 @@ export async function POST(request: NextRequest) {
     }
 }
 
-function getPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>): PokemonJSON['data'] {
-    // check cache for existing results
-    // if none - perform search using fuse
-    // return results and cache them
 
-    // todo: add caching
-    const data = fuse.search(query).map(result => result.item);
-    return data;
+
+/**
+ * Gets Pokémon matching the search query, using cache if available.
+ * @param query - The search query.
+ * @param fuse - The Fuse.js instance for searching.
+ * @param cache - The NodeCache instance for caching results.
+ * @returns An array of matching Pokémon data.
+ */
+function getPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>, cache: NodeCache): PokemonJSON['data'] {
+    const cached = getCachedPokemons(query, cache);
+    if (cached) {
+        return cached;
+    }
+
+    const searched = getSearchedPokemons(query, fuse);
+    setCachedPokemons(query, searched, cache);
+    return searched;
+}
+
+
+/**
+ * Retrieves cached Pokémon data for a given query.
+ * @param query - The search query.
+ * @param cache - The NodeCache instance to use for retrieving cached data.
+ * @returns The cached Pokémon data or null if not found.
+ */
+function getCachedPokemons(query: string, cache: NodeCache): PokemonJSON['data'] | null {
+    const cachedData = cache.get<PokemonJSON['data']>(query);
+    if (cachedData) {
+        console.info('Cache hit for query:', query);
+        return cachedData;
+    }
+    console.info('Cache miss for query:', query);
+    return null;
+}
+
+/**
+ * Performs a search for Pokémon matching the query using Fuse.js.
+ * @param query - The search query.
+ * @param fuse - The Fuse.js instance to use for searching.
+ * @returns An array of matching Pokémon data.
+ */
+function getSearchedPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>): PokemonJSON['data'] {
+    return fuse.search(query).map(result => result.item);
+}
+
+
+/**
+ * Caches Pokémon data for a given query.
+ * @param query - The search query.
+ * @param data - The Pokémon data to cache.
+ * @param cache - The NodeCache instance to use for caching.
+ */
+function setCachedPokemons(query: string, data: PokemonJSON['data'], cache: NodeCache): void {
+    cache.set(query, data);
+    console.info('Cached results for query:', query);
 }
 
 /**
