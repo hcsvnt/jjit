@@ -7,31 +7,9 @@ import NodeCache from 'node-cache';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-
-// const myCache = new NodeCache( { stdTTL: 0, checkperiod: 60 * 60 * 24 * 7 } );
-// set
-// obj = { my: "Special", variable: 42 };
-// success = myCache.set( "myKey", obj, 10000 );
-
-// set multiple
-// const obj = { my: "Special", variable: 42 };
-// const obj2 = { my: "other special", variable: 1337 };
-
-// get
-// value = myCache.get( "myKey" );
-// if ( value == undefined ){
-//     // handle miss!
-// }
-
-// const success = myCache.mset([
-//     {key: "myKey", val: obj, ttl: 10000},
-//     {key: "myKey2", val: obj2},
-// ])
-
-// const fuse = new Fuse(books, {
-//   keys: ['title', 'author.firstName']
-// })
-
+/**
+ * Build the fuse and cache instances at module level.
+ */
 const FILEPATH = path.resolve(process.cwd(), 'public', 'pokemon.json');
 const CACHE_TTL = 60 * 60 * 24 * 7;
 const pokemonData = await readPokemonJSON(FILEPATH);
@@ -39,7 +17,6 @@ const pokeFuse = createPokeFuse(pokemonData);
 const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
 
 export async function POST(request: NextRequest) {
-    console.log('Received request to /api/search', request);
 
     try {
         const body = await request.json();
@@ -66,7 +43,7 @@ export async function POST(request: NextRequest) {
  * @param cache - The NodeCache instance for caching results.
  * @returns An array of matching Pokémon data.
  */
-function getPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>, cache: NodeCache): PokemonJSON['data'] {
+export function getPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>, cache: NodeCache): PokemonJSON['data'] {
     const cached = getCachedPokemons(query, cache);
     if (cached) {
         return cached;
@@ -84,7 +61,7 @@ function getPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>, cac
  * @param cache - The NodeCache instance to use for retrieving cached data.
  * @returns The cached Pokémon data or null if not found.
  */
-function getCachedPokemons(query: string, cache: NodeCache): PokemonJSON['data'] | null {
+export function getCachedPokemons(query: string, cache: NodeCache): PokemonJSON['data'] | null {
     const cachedData = cache.get<PokemonJSON['data']>(query);
     if (cachedData) {
         console.info('Cache hit for query:', query);
@@ -100,7 +77,7 @@ function getCachedPokemons(query: string, cache: NodeCache): PokemonJSON['data']
  * @param fuse - The Fuse.js instance to use for searching.
  * @returns An array of matching Pokémon data.
  */
-function getSearchedPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>): PokemonJSON['data'] {
+export function getSearchedPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>): PokemonJSON['data'] {
     return fuse.search(query).map(result => result.item);
 }
 
@@ -111,7 +88,7 @@ function getSearchedPokemons(query: string, fuse: Fuse<PokemonJSON['data'][numbe
  * @param data - The Pokémon data to cache.
  * @param cache - The NodeCache instance to use for caching.
  */
-function setCachedPokemons(query: string, data: PokemonJSON['data'], cache: NodeCache): void {
+export function setCachedPokemons(query: string, data: PokemonJSON['data'], cache: NodeCache): void {
     cache.set(query, data);
     console.info('Cached results for query:', query);
 }
@@ -122,7 +99,7 @@ function setCachedPokemons(query: string, data: PokemonJSON['data'], cache: Node
  * @returns The validated Pokémon ID.
  * @throws ZodError if validation fails.
  */
-function getValidatedInput(input: unknown): string {
+export function getValidatedInput(input: unknown): string {
     const validatedData = schema.safeParse(input);
     if (!validatedData.success) {
         throw new ZodError(validatedData.error.issues);
@@ -135,7 +112,7 @@ function getValidatedInput(input: unknown): string {
  * @param data - An array of Pokémon data to index.
  * @returns A configured Fuse instance.
  */
-function createPokeFuse(data: PokemonJSON['data']): Fuse<PokemonJSON['data'][number]> {
+export function createPokeFuse(data: PokemonJSON['data']): Fuse<PokemonJSON['data'][number]> {
     return new Fuse(data, {
         keys: ['name', 'id'],
         threshold: 0.3,
@@ -150,7 +127,7 @@ function createPokeFuse(data: PokemonJSON['data']): Fuse<PokemonJSON['data'][num
  * @returns A promise that resolves to an array of Pokémon data.
  * @throws An error if the file cannot be read or the JSON structure is invalid.
  */
-async function readPokemonJSON(path: string): Promise<PokemonJSON['data']> {
+export async function readPokemonJSON(path: string): Promise<PokemonJSON['data']> {
     const data = await readFile(path, 'utf-8');
 
     try {
