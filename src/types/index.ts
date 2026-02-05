@@ -7,8 +7,7 @@
  * PokemonJSON type definition for the local file ingest.
  */
 export type PokemonJSON = {
-    data: [{ name: string; id: number }
-    ]
+    data: { name: string; id: number }[];
 }
 
 /**
