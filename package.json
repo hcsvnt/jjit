@@ -10,7 +10,6 @@
         "lint:fix": "biome lint --fix",
         "format": "biome format --write",
         "test": "vitest",
-        "test:watch": "vitest --watch",
         "test:ui": "vitest --ui",
         "test:coverage": "vitest run --coverage"
     },

@@ -14,7 +14,7 @@
         - test that valid queries trigger mocked file read
         - test that results are cached after first read
 
-- [] /details - proxy for PokeAPI with caching\*
+- [x] /details - proxy for PokeAPI with caching\*
     - validate query parameter `id` using Zod schema
     - fetch Pokemon details from PokeAPI by id
     - cache results to minimize external API calls
