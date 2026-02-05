@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { schema } from './schema';
-import type { Pokemon, PokemonJSON } from '@/types';
+import type { PokemonJSON } from '@/types';
 import Fuse from 'fuse.js';
 import NodeCache from 'node-cache';
 import { readFile } from 'node:fs/promises';
@@ -16,6 +16,12 @@ const pokemonData = await readPokemonJSON(FILEPATH);
 const pokeFuse = createPokeFuse(pokemonData);
 const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
 
+/**
+ * Handles POST requests to search for Pokémon by name.
+ * Expects a JSON body with a 'pokemon' field (string).
+ * @param request - The incoming NextRequest object.
+ * @returns A NextResponse containing the search results or an error message.
+ */
 export async function POST(request: NextRequest) {
 
     try {
@@ -33,8 +39,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
-
-
 
 /**
  * Gets Pokémon matching the search query, using cache if available.
@@ -54,7 +58,6 @@ export function getPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number
     return searched;
 }
 
-
 /**
  * Retrieves cached Pokémon data for a given query.
  * @param query - The search query.
@@ -73,6 +76,7 @@ export function getCachedPokemons(query: string, cache: NodeCache): PokemonJSON[
 
 /**
  * Performs a search for Pokémon matching the query using Fuse.js.
+ * Returns cached data if available.
  * @param query - The search query.
  * @param fuse - The Fuse.js instance to use for searching.
  * @returns An array of matching Pokémon data.
@@ -80,7 +84,6 @@ export function getCachedPokemons(query: string, cache: NodeCache): PokemonJSON[
 export function getSearchedPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>): PokemonJSON['data'] {
     return fuse.search(query).map(result => result.item);
 }
-
 
 /**
  * Caches Pokémon data for a given query.
