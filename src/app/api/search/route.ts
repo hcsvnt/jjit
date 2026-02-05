@@ -114,7 +114,7 @@ export function getValidatedInput(input: unknown): string {
  */
 export function createPokeFuse(data: PokemonJSON['data']): Fuse<PokemonJSON['data'][number]> {
     return new Fuse(data, {
-        keys: ['name', 'id'],
+        keys: ['name'],
         threshold: 0.3,
     })
 }
