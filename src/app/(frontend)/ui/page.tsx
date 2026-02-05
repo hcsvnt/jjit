@@ -3,6 +3,7 @@
 import Button from '@/components/button';
 import Chip from '@/components/chip';
 import TextField from '@/components/text_field';
+import Autocomplete from '@/components/autocomplete';
 import { Main, Section, Article } from '@/components/semantic';
 
 export default function Home() {
@@ -59,6 +60,26 @@ export default function Home() {
                     />
                 </Variant>
             </Component>
+
+            <hr />
+
+            <Component name="Autocomplete">
+                <Variant name="Default">
+                    <Autocomplete
+                        options={['Option A', 'Option B', 'Option C']}
+                        noOptionsText="Choose an option"
+                        renderInput={(params) => (
+                            <TextField {...params} label="Label" placeholder="Choose an option" />
+                        )}
+                        onChange={(event, value) => console.log('Selected:', value)}
+                    />
+                </Variant>
+            </Component>
+
+            <br />
+            <br />
+            <br />
+            <br />
         </Main>
     );
 }
