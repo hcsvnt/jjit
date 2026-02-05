@@ -29,8 +29,8 @@ export const schema = z.object({
         .number()
         .min(16, MESSAGES.AGE_RANGE)
         .max(99, MESSAGES.AGE_RANGE),
-    pokemon: z.
-        number()
+    pokemon: z
+        .number()
         .int()
         .positive(MESSAGES.POKEMON_CHOOSE),
 });

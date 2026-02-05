@@ -29,7 +29,7 @@
 
 \*\* Pretend it is not feasible to keep the entire pokemon.json in memory constantly.
 
-- submit - Handle form submissions in a server action\*\*\*
+- [x] submit - Handle form submissions in a server action\*\*\*
     - validate request body ('name', 'age', 'pokemonId') using Zod schema
     - this endpoint does no business logic
     - return 200 with success message for valid submissions
