@@ -3,28 +3,14 @@ import { describe, expect, it, vi } from 'vitest';
 import type { ActionResponse, FormSubmission } from './schema';
 import { MOCKS } from './mocks';
 import { submit } from './submit';
-
-function makeFormData(values: Record<string, string | number | null | undefined>) {
-    const formData = new FormData();
-
-    for (const [key, value] of Object.entries(values)) {
-        if (value === null || value === undefined) continue;
-        formData.set(key, String(value));
-    }
-
-    return formData;
-}
-
-const prevState = {
-    success: false,
-    message: '',
-    fields: MOCKS.valid,
-} satisfies ActionResponse<FormSubmission>;
+import { makeFormData } from '@/tests/utils';
 
 describe('Register Form submit (server action)', () => {
-    vi.spyOn(console, 'log').mockImplementation(() => undefined);
-    vi.spyOn(console, 'info').mockImplementation(() => undefined);
-    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const prevState = {
+        success: false,
+        message: '',
+        fields: MOCKS.valid,
+    } satisfies ActionResponse<FormSubmission>;
 
     it('returns success response for valid submission', async () => {
         const formData = makeFormData(MOCKS.valid);

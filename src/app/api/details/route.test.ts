@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ZodError } from 'zod';
-import type { Pokemon } from '@/types';
 import { NextRequest } from 'next/server';
 import NodeCache from 'node-cache';
+import { MOCK_POKEMON } from '@/tests/utils';
 import {
     fetchDetails,
     getCachedDetails,
@@ -49,13 +49,7 @@ describe('Route /api/details', () => {
         });
 
         it('calls fetch with the expected URL and returns JSON', async () => {
-            const mockPokemon: Pokemon = {
-                id: 25,
-                name: 'pikachu',
-                base_experience: 112,
-                types: [{ slot: 1, type: { name: 'electric' } }],
-                sprites: { front_default: 'https://example.com/pikachu.png' },
-            };
+            const mockPokemon = MOCK_POKEMON.pikachu;
 
             const fetchMock = vi.fn().mockResolvedValue({
                 ok: true,
@@ -101,13 +95,7 @@ describe('Route /api/details', () => {
 
         it('getCachedDetails retrieves value when present', () => {
             const cache = new NodeCache({ stdTTL: 60 });
-            const pikachu: Pokemon = {
-                id: 25,
-                name: 'pikachu',
-                base_experience: 112,
-                types: [{ slot: 1, type: { name: 'electric' } }],
-                sprites: { front_default: 'https://example.com/pikachu.png' },
-            };
+            const pikachu = MOCK_POKEMON.pikachu;
 
             cache.set('25', pikachu);
             expect(getCachedDetails(25, cache)).toEqual(pikachu);
@@ -115,13 +103,7 @@ describe('Route /api/details', () => {
 
         it('setCachedDetails stores value by pokemon id', () => {
             const cache = new NodeCache({ stdTTL: 60 });
-            const pikachu: Pokemon = {
-                id: 25,
-                name: 'pikachu',
-                base_experience: 112,
-                types: [{ slot: 1, type: { name: 'electric' } }],
-                sprites: { front_default: 'https://example.com/pikachu.png' },
-            };
+            const pikachu = MOCK_POKEMON.pikachu;
 
             setCachedDetails(25, pikachu, cache);
             expect(cache.get('25')).toEqual(pikachu);
@@ -131,13 +113,7 @@ describe('Route /api/details', () => {
     describe('getDetails', () => {
         it('returns cached data without calling fetch', async () => {
             const cache = new NodeCache({ stdTTL: 60 });
-            const cached: Pokemon = {
-                id: 101,
-                name: 'cachedmon',
-                base_experience: 1,
-                types: [{ slot: 1, type: { name: 'normal' } }],
-                sprites: { front_default: 'https://example.com/cached.png' },
-            };
+            const cached = MOCK_POKEMON.cached;
 
             setCachedDetails(101, cached, cache);
 
@@ -156,13 +132,7 @@ describe('Route /api/details', () => {
             };
 
             const cache = new NodeCache({ stdTTL: 60 });
-            const mockPokemon: Pokemon = {
-                id: 102,
-                name: 'bulbasaur',
-                base_experience: 64,
-                types: [{ slot: 1, type: { name: 'grass' } }],
-                sprites: { front_default: 'https://example.com/bulbasaur.png' },
-            };
+            const mockPokemon = MOCK_POKEMON.bulbasaur;
 
             const fetchMock = vi.fn().mockResolvedValue({
                 ok: true,
@@ -201,13 +171,7 @@ describe('Route /api/details', () => {
         });
 
         it('returns 200 with pokemon details for valid payload', async () => {
-            const mockPokemon: Pokemon = {
-                id: 25,
-                name: 'pikachu',
-                base_experience: 112,
-                types: [{ slot: 1, type: { name: 'electric' } }],
-                sprites: { front_default: 'https://example.com/pikachu.png' },
-            };
+            const mockPokemon = MOCK_POKEMON.pikachu;
 
             const fetchMock = vi.fn().mockResolvedValue({
                 ok: true,
@@ -229,13 +193,7 @@ describe('Route /api/details', () => {
         });
 
         it('returns cached result on subsequent calls (fetch called once)', async () => {
-            const mockPokemon: Pokemon = {
-                id: 26,
-                name: 'raichu',
-                base_experience: 218,
-                types: [{ slot: 1, type: { name: 'electric' } }],
-                sprites: { front_default: 'https://example.com/raichu.png' },
-            };
+            const mockPokemon = MOCK_POKEMON.raichu;
 
             const fetchMock = vi.fn().mockResolvedValue({
                 ok: true,

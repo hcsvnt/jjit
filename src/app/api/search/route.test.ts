@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import NodeCache from 'node-cache';
 import { ZodError } from 'zod';
 import { NextRequest } from 'next/server';
+import { SAMPLE_POKEMON_DATA } from '@/tests/utils';
 
 const mockReadFile = vi.fn();
 
@@ -31,17 +32,8 @@ async function loadRouteModule(pokemonJsonData: Array<{ id: number; name: string
 describe('Route /api/search', () => {
     let route: RouteModule;
 
-    const sampleData = [
-        { id: 1, name: 'Bulbasaur' },
-        { id: 4, name: 'Charmander' },
-        { id: 25, name: 'Pikachu' },
-    ];
-
     beforeEach(async () => {
-        vi.spyOn(console, 'log').mockImplementation(() => undefined);
-        vi.spyOn(console, 'info').mockImplementation(() => undefined);
-        vi.spyOn(console, 'error').mockImplementation(() => undefined);
-        route = await loadRouteModule(sampleData);
+        route = await loadRouteModule(SAMPLE_POKEMON_DATA);
     });
 
     afterEach(() => {
@@ -61,7 +53,7 @@ describe('Route /api/search', () => {
         });
 
         it('createPokeFuse + getSearchedPokemons finds by name', () => {
-            const fuse = route.createPokeFuse(sampleData);
+            const fuse = route.createPokeFuse(SAMPLE_POKEMON_DATA);
             const results = route.getSearchedPokemons('Pika', fuse);
             expect(results.length).toBeGreaterThan(0);
             expect(results[0]?.name).toBe('Pikachu');
@@ -88,7 +80,7 @@ describe('Route /api/search', () => {
 
         it('getPokemons uses cache on second call (no extra Fuse search)', () => {
             const cache = new NodeCache({ stdTTL: 60 });
-            const fuse = route.createPokeFuse(sampleData);
+            const fuse = route.createPokeFuse(SAMPLE_POKEMON_DATA);
             const searchSpy = vi.spyOn(fuse, 'search');
 
             const first = route.getPokemons('Pika', fuse, cache);
