@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { ActionResponse, FormSubmission } from './schema';
 import { MOCKS } from './mocks';
@@ -80,5 +80,17 @@ describe('Register Form submit (server action)', () => {
 
         expect(result.errors?.properties?.age?.errors).toBeDefined();
         expect(result.errors?.properties?.pokemon?.errors).toBeDefined();
+    });
+
+    it('calls the business logic function on valid submission', async () => {
+        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => { });
+
+        const formData = makeFormData(MOCKS.valid);
+        const result = await submit(prevState, formData);
+
+        expect(result.success).toBe(true);
+        expect(consoleSpy).toHaveBeenCalledWith('Processing submission for:', MOCKS.valid);
+
+        consoleSpy.mockRestore();
     });
 });

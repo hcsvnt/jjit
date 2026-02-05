@@ -31,6 +31,11 @@ export async function submit(
         }
     }
 
+    (function doBusinessLogic(data: FormSubmission) {
+        // Placeholder for business logic, e.g., saving to a database
+        console.log('Processing submission for:', data);
+    })(validatedData.data);
+
     return {
         success: true,
         message: 'Success',
