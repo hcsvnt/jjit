@@ -22,6 +22,10 @@ const prevState = {
 } satisfies ActionResponse<FormSubmission>;
 
 describe('Register Form submit (server action)', () => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
     it('returns success response for valid submission', async () => {
         const formData = makeFormData(MOCKS.valid);
 

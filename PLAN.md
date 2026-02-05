@@ -2,7 +2,7 @@
 
 ### Backend (API Routes)
 
-- /search - Fuzzy search for Pokemon names with caching\*
+- [x] /search - Fuzzy search for Pokemon names with caching\*
     - leverage Fuse.js
     - validate query parameter `name` using Zod schema
     - read available names from provided pokemon.json file
@@ -14,7 +14,7 @@
         - test that valid queries trigger mocked file read
         - test that results are cached after first read
 
-- [x] /details - proxy for PokeAPI with caching\*
+- [] /details - proxy for PokeAPI with caching\*
     - validate query parameter `id` using Zod schema
     - fetch Pokemon details from PokeAPI by id
     - cache results to minimize external API calls

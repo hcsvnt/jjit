@@ -38,6 +38,7 @@ describe('Route /api/search', () => {
     ];
 
     beforeEach(async () => {
+        vi.spyOn(console, 'log').mockImplementation(() => undefined);
         vi.spyOn(console, 'info').mockImplementation(() => undefined);
         vi.spyOn(console, 'error').mockImplementation(() => undefined);
         route = await loadRouteModule(sampleData);
