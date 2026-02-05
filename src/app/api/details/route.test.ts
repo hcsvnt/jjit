@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ZodError } from 'zod';
 import type { Pokemon } from '@/types';
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 import NodeCache from 'node-cache';
 import {
     fetchDetails,
@@ -215,10 +215,11 @@ describe('Route /api/details', () => {
             });
             vi.stubGlobal('fetch', fetchMock);
 
-            const request = {
-                json: async () => ({ pokemon: 25 }),
-            } as unknown as NextRequest;
-
+            const request = new NextRequest('http://localhost/api/details', {
+                method: 'POST',
+                body: JSON.stringify({ pokemon: 25 }),
+                headers: { 'Content-Type': 'application/json' },
+            });
             const response = await POST(request);
             expect(response.status).toBe(200);
 
@@ -259,10 +260,11 @@ describe('Route /api/details', () => {
         });
 
         it('returns 400 with zod issues for invalid payload', async () => {
-            const request = {
-                json: async () => ({ pokemon: 0 }),
-            } as unknown as NextRequest;
-
+            const request = new NextRequest('http://localhost/api/details', {
+                method: 'POST',
+                body: JSON.stringify({ pokemon: 0 }),
+                headers: { 'Content-Type': 'application/json' },
+            });
             const response = await POST(request);
             expect(response.status).toBe(400);
 
@@ -280,9 +282,11 @@ describe('Route /api/details', () => {
             });
             vi.stubGlobal('fetch', fetchMock);
 
-            const request = {
-                json: async () => ({ pokemon: 999999 }),
-            } as unknown as NextRequest;
+            const request = new NextRequest('http://localhost/api/details', {
+                method: 'POST',
+                body: JSON.stringify({ pokemon: 999999 }),
+                headers: { 'Content-Type': 'application/json' },
+            });
 
             const response = await POST(request);
             expect(response.status).toBe(502);
@@ -292,11 +296,11 @@ describe('Route /api/details', () => {
         });
 
         it('returns 500 when request.json throws unexpected error', async () => {
-            const request = {
-                json: async () => {
-                    throw new Error('boom');
-                },
-            } as unknown as NextRequest;
+            const request = new NextRequest('http://localhost/api/details', {
+                method: 'POST',
+                body: 'invalid json',
+                headers: { 'Content-Type': 'application/json' },
+            });
 
             const response = await POST(request);
             expect(response.status).toBe(500);
@@ -311,9 +315,11 @@ describe('Route /api/details', () => {
             });
             vi.stubGlobal('fetch', fetchMock);
 
-            const request = {
-                json: async () => ({ pokemon: 27 }),
-            } as unknown as NextRequest;
+            const request = new NextRequest('http://localhost/api/details', {
+                method: 'POST',
+                body: JSON.stringify({ pokemon: 1 }),
+                headers: { 'Content-Type': 'application/json' },
+            });
 
             const response = await POST(request);
             expect(response.status).toBe(500);

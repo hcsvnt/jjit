@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import NodeCache from 'node-cache';
 import { ZodError } from 'zod';
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 
 const mockReadFile = vi.fn();
 
@@ -131,10 +131,11 @@ describe('Route /api/search', () => {
 
     describe('POST handler', () => {
         it('returns 200 with results for valid payload', async () => {
-            const request = {
-                json: async () => ({ pokemon: 'Pika' }),
-            } as unknown as NextRequest;
-
+            const request = new NextRequest('http://localhost/api/search/pikachu', {
+                method: 'POST',
+                body: JSON.stringify({ pokemon: 'pikachu' }),
+                headers: { 'Content-Type': 'application/json' },
+            });
             const response = await route.POST(request);
             expect(response.status).toBe(200);
 
@@ -145,9 +146,11 @@ describe('Route /api/search', () => {
         });
 
         it('returns 400 with zod issues for invalid payload', async () => {
-            const request = {
-                json: async () => ({ pokemon: '' }),
-            } as unknown as NextRequest;
+            const request = new NextRequest('http://localhost/api/search/pikachu', {
+                method: 'POST',
+                body: JSON.stringify({ pokemon: '' }),
+                headers: { 'Content-Type': 'application/json' },
+            });
 
             const response = await route.POST(request);
             expect(response.status).toBe(400);
@@ -159,11 +162,11 @@ describe('Route /api/search', () => {
         });
 
         it('returns 500 when request.json throws unexpected error', async () => {
-            const request = {
-                json: async () => {
-                    throw new Error('boom');
-                },
-            } as unknown as NextRequest;
+            const request = new NextRequest('http://localhost/api/search/pikachu', {
+                method: 'POST',
+                body: 'invalid-json',
+                headers: { 'Content-Type': 'application/json' },
+            });
 
             const response = await route.POST(request);
             expect(response.status).toBe(500);
