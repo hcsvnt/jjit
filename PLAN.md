@@ -42,7 +42,7 @@
 
 #### Frontend (Next.js App)
 
-- Registration Form Page
+- [x] Registration Form Page
     - Display current date in the top right corner by fetching from Time API on server side
     - Form fields:
         - Trainer's Name (text input)
@@ -76,7 +76,7 @@
         - test that valid form submission triggers server action and shows success message
         - test that clicking reset button clears the form and error messages
 
-- UI Page
+- [x] UI Page
     - a page to display ui elements and their variants and states for review
     - like a super-simple storybook (which would be overkill for this)
 
@@ -88,6 +88,6 @@ but here the backend lookup is quite fast and cached, so we can afford better UX
 - [x] add favicon
 - [x] not explicitly required and missing in the design file, but adjust for mobile devices
 - [x] add metadata for seo
-- [] dockerize
-- [] add README with instructions to run the app and tests etc
-- [] deploy
+- [x] dockerize
+- [x] add README with instructions to run the app and tests etc
+- [x] deploy

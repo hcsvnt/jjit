@@ -2,6 +2,11 @@
     "name": "jjit",
     "version": "0.1.0",
     "private": true,
+    "author": {
+        "name": "Mateusz Hallala | HCSVNT",
+        "email": "hallala.work@gmail.com",
+        "url": "https://hallala.work"
+    },
     "scripts": {
         "dev": "next dev",
         "build": "next build",

@@ -155,7 +155,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                                     value={data?.find(({ id }) => id === watch('pokemon')) || null}
                                     loading={isLoading}
                                     loadingText="Loading options..."
-                                    noOptionsText="No options available"
+                                    noOptionsText="Start typing to search..."
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
