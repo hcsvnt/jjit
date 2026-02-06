@@ -21,18 +21,9 @@ const MESSAGES = {
 } as const;
 
 export const schema = z.object({
-    name: z.string()
-        .trim()
-        .min(2, MESSAGES.NAME_LENGTH)
-        .max(20, MESSAGES.NAME_LENGTH),
-    age: z
-        .coerce.number<number>()
-        .min(16, MESSAGES.AGE_RANGE)
-        .max(99, MESSAGES.AGE_RANGE),
-    pokemon: z
-        .coerce.number<number>()
-        .int()
-        .positive(MESSAGES.POKEMON_CHOOSE),
+    name: z.string().trim().min(2, MESSAGES.NAME_LENGTH).max(20, MESSAGES.NAME_LENGTH),
+    age: z.coerce.number<number>().min(16, MESSAGES.AGE_RANGE).max(99, MESSAGES.AGE_RANGE),
+    pokemon: z.coerce.number<number>().int().positive(MESSAGES.POKEMON_CHOOSE),
 });
 
 export type FormSubmission = z.infer<typeof schema>;

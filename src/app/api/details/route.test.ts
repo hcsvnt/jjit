@@ -70,7 +70,7 @@ describe('Route /api/details', () => {
             vi.stubGlobal('fetch', fetchMock);
 
             await expect(fetchDetails(999999)).rejects.toThrow(
-                /Upstream API error fetching details for pokemon 999999: 404 Not Found/
+                /Upstream API error fetching details for pokemon 999999: 404 Not Found/,
             );
         });
 
@@ -150,7 +150,6 @@ describe('Route /api/details', () => {
             vi.unstubAllGlobals();
         });
     });
-
 
     describe('POST handler', () => {
         const originalEnv = process.env;

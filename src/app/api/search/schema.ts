@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 export const schema = z.object({
-    pokemon: z.string().trim().min(1)
+    pokemon: z.string().trim().min(1),
 });

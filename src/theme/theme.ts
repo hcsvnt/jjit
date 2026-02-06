@@ -54,14 +54,13 @@ export const theme = createTheme({
         fontSize: 14,
     },
     components: {
-
         MuiCard: {
             styleOverrides: {
                 root: {
                     boxShadow: 'none',
                     border: 'var(--border)',
-                }
-            }
+                },
+            },
         },
 
         MuiButton: {
@@ -126,19 +125,18 @@ export const theme = createTheme({
         MuiTextField: {
             styleOverrides: {
                 root: {
-
                     '& fieldset': {
                         border: 'var(--border)',
                     },
 
-                    "& .MuiOutlinedInput-root": {
-                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                    '& .MuiOutlinedInput-root': {
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
                             border: '1px solid var(--color-primary)',
                         },
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                             border: '1px solid var(--color-primary)',
                             boxShadow: 'var(--shadow-focus)',
-                        }
+                        },
                     },
 
                     'div.MuiInputBase-root': {
@@ -148,7 +146,7 @@ export const theme = createTheme({
                     'p.MuiFormHelperText-root': {
                         marginLeft: 0,
                         color: colors.error,
-                    }
+                    },
                 },
             },
         },
@@ -158,7 +156,7 @@ export const theme = createTheme({
                 root: { textTransform: 'capitalize' },
                 input: { textTransform: 'capitalize' },
                 paper: { textTransform: 'capitalize' },
-            }
+            },
         },
     },
 });

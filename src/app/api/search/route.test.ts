@@ -21,7 +21,9 @@ vi.mock('node:fs/promises', async (importOriginal) => {
 
 type RouteModule = typeof import('./route');
 
-async function loadRouteModule(pokemonJsonData: Array<{ id: number; name: string }> = []): Promise<RouteModule> {
+async function loadRouteModule(
+    pokemonJsonData: Array<{ id: number; name: string }> = [],
+): Promise<RouteModule> {
     mockReadFile.mockResolvedValue(JSON.stringify({ data: pokemonJsonData }));
     vi.resetModules();
     const mod = await import('./route');
@@ -42,7 +44,6 @@ describe('Route /api/search', () => {
     });
 
     describe('helpers', () => {
-
         it('getValidatedInput returns trimmed pokemon string', () => {
             expect(route.getValidatedInput({ pokemon: '  Pikachu  ' })).toBe('Pikachu');
         });
@@ -101,23 +102,29 @@ describe('Route /api/search', () => {
 
             const results = route.getPokemons('Charmander', fuseStub, cache);
             expect(results).toEqual(cachedValue);
-            expect((fuseStub.search as unknown as ReturnType<typeof vi.fn>)).not.toHaveBeenCalled();
+            expect(fuseStub.search as unknown as ReturnType<typeof vi.fn>).not.toHaveBeenCalled();
         });
 
         it('readPokemonJSON returns parsed data array', async () => {
-            mockReadFile.mockResolvedValueOnce(JSON.stringify({ data: [{ id: 25, name: 'Pikachu' }] }));
+            mockReadFile.mockResolvedValueOnce(
+                JSON.stringify({ data: [{ id: 25, name: 'Pikachu' }] }),
+            );
             const data = await route.readPokemonJSON('/fake/pokemon.json');
             expect(data).toEqual([{ id: 25, name: 'Pikachu' }]);
         });
 
         it('readPokemonJSON rejects invalid structure', async () => {
             mockReadFile.mockResolvedValueOnce(JSON.stringify({ nope: [] }));
-            await expect(route.readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(/Invalid JSON structure/);
+            await expect(route.readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(
+                /Invalid JSON structure/,
+            );
         });
 
         it('readPokemonJSON rejects invalid JSON', async () => {
             mockReadFile.mockResolvedValueOnce('{');
-            await expect(route.readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(/Error parsing JSON/);
+            await expect(route.readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(
+                /Error parsing JSON/,
+            );
         });
     });
 

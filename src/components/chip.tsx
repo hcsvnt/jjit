@@ -1,5 +1,5 @@
 import MuiChip from '@mui/material/Chip';
 
-export default function Label({ label }: { label: string }) {
+export default function Chip({ label }: { label: string }) {
     return <MuiChip label={label} />;
 }

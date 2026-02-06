@@ -4,13 +4,13 @@ const valid = {
     name: 'Diego',
     age: 22,
     pokemon: 25,
-}
+};
 
 const noPokemon = {
     name: 'Diego',
     age: 22,
     pokemon: -1,
-}
+};
 
 const underage = {
     name: 'Diego',
@@ -18,9 +18,8 @@ const underage = {
     pokemon: 25,
 };
 
-
-export const MOCKS = ({
+export const MOCKS = {
     valid,
     noPokemon,
     underage,
-} as const) satisfies Record<string, FormSubmission>;
+} as const satisfies Record<string, FormSubmission>;

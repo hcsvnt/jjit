@@ -73,7 +73,7 @@ describe('Register Form submit (server action)', () => {
     });
 
     it('calls the business logic function on valid submission', async () => {
-        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => { });
+        const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
         const formData = makeFormData(MOCKS.valid);
         const result = await submit(prevState, formData);

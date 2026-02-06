@@ -11,7 +11,7 @@ import path from 'node:path';
 export type SearchResponse = {
     name: string;
     id: number;
-}[]
+}[];
 
 /**
  * Build the fuse and cache instances at module level.
@@ -52,7 +52,11 @@ export async function POST(request: NextRequest) {
  * @param cache - The NodeCache instance for caching results.
  * @returns An array of matching Pokémon data.
  */
-export function getPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>, cache: NodeCache): PokemonJSON['data'] {
+export function getPokemons(
+    query: string,
+    fuse: Fuse<PokemonJSON['data'][number]>,
+    cache: NodeCache,
+): PokemonJSON['data'] {
     const cached = getCachedPokemons(query, cache);
     if (cached) {
         return cached;
@@ -86,8 +90,11 @@ export function getCachedPokemons(query: string, cache: NodeCache): PokemonJSON[
  * @param fuse - The Fuse.js instance to use for searching.
  * @returns An array of matching Pokémon data.
  */
-export function getSearchedPokemons(query: string, fuse: Fuse<PokemonJSON['data'][number]>): PokemonJSON['data'] {
-    return fuse.search(query).map(result => result.item);
+export function getSearchedPokemons(
+    query: string,
+    fuse: Fuse<PokemonJSON['data'][number]>,
+): PokemonJSON['data'] {
+    return fuse.search(query).map((result) => result.item);
 }
 
 /**
@@ -96,7 +103,11 @@ export function getSearchedPokemons(query: string, fuse: Fuse<PokemonJSON['data'
  * @param data - The Pokémon data to cache.
  * @param cache - The NodeCache instance to use for caching.
  */
-export function setCachedPokemons(query: string, data: PokemonJSON['data'], cache: NodeCache): void {
+export function setCachedPokemons(
+    query: string,
+    data: PokemonJSON['data'],
+    cache: NodeCache,
+): void {
     cache.set(query, data);
     console.info('Cached results for query:', query);
 }
@@ -124,7 +135,7 @@ export function createPokeFuse(data: PokemonJSON['data']): Fuse<PokemonJSON['dat
     return new Fuse(data, {
         keys: ['name'],
         threshold: 0.3,
-    })
+    });
 }
 
 /**
@@ -146,7 +157,6 @@ export async function readPokemonJSON(path: string): Promise<PokemonJSON['data']
         }
 
         return dataJSON.data;
-
     } catch (e) {
         throw new Error('Error parsing JSON from ' + path + ': ' + (e as Error).message);
     }

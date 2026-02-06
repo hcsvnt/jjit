@@ -1,5 +1,5 @@
 import Button from '@/components/button';
-import  Card from '@mui/material/Card';
+import Card from '@mui/material/Card';
 import Dialog from '@mui/material/Dialog';
 import { P } from '@/components/typography';
 

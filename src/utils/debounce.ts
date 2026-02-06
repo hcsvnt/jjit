@@ -1,4 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/suspicious/noExplicitAny: This needs to stay flexible to be reusable. */
 
 /**
  * Creates a debounced version of the provided callback function.

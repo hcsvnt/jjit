@@ -18,7 +18,6 @@ export function Span({ children, ...props }: Props) {
     );
 }
 
-
 export function List({ children, sx }: { children: React.ReactNode; sx?: React.CSSProperties }) {
     return (
         <MuiTypography component="ul" variant="body1" sx={{ paddingLeft: '20px', ...sx }}>
@@ -27,7 +26,13 @@ export function List({ children, sx }: { children: React.ReactNode; sx?: React.C
     );
 }
 
-export function ListItem({ children, sx }: { children: React.ReactNode; sx?: React.CSSProperties }) {
+export function ListItem({
+    children,
+    sx,
+}: {
+    children: React.ReactNode;
+    sx?: React.CSSProperties;
+}) {
     return (
         <MuiTypography component="li" variant="body1" sx={{ marginBottom: '4px', ...sx }}>
             {children}
@@ -45,10 +50,7 @@ export function Heading({
     children: React.ReactNode;
 }) {
     return (
-        <MuiTypography
-            component={`h${level}`}
-            variant={`h${size}`}
-        >
+        <MuiTypography component={`h${level}`} variant={`h${size}`}>
             {children}
         </MuiTypography>
     );

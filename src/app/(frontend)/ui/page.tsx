@@ -3,8 +3,8 @@
 import Button from '@/components/button';
 import Chip from '@/components/chip';
 import TextField from '@/components/text_field';
-import Autocomplete from '@/components/autocomplete';
 import { Main, Section, Article } from '@/components/semantic';
+import Autocomplete from '@mui/material/Autocomplete';
 
 export default function Home() {
     return (

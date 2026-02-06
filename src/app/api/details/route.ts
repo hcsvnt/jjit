@@ -2,9 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import type { Pokemon } from '@/types';
-import { schema } from "./schema";
+import { schema } from './schema';
 import NodeCache from 'node-cache';
-
 
 const CACHE_TTL = 60 * 60 * 24 * 7;
 const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
@@ -17,7 +16,7 @@ const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
  * @returns A NextResponse containing the Pokémon details or an error message.
  */
 export async function POST(request: NextRequest) {
-    console.log({ request })
+    console.log({ request });
     try {
         const body = await request.json();
         const pokemon = getValidatedInput(body);
@@ -38,7 +37,6 @@ export async function POST(request: NextRequest) {
     }
 }
 
-
 /**
  * Fetches detailed information about a Pokémon from the PokeAPI.
  * @param pokemon - The Pokémon ID.
@@ -54,7 +52,9 @@ async function fetchDetails(pokemon: number): Promise<Pokemon> {
     const url = new URL(POKEAPI_BASE_URL + query);
     const res = await fetch(url.toString());
     if (!res.ok) {
-        throw new Error(`Upstream API error fetching details for pokemon ${pokemon}: ${res.status} ${res.statusText}`);
+        throw new Error(
+            `Upstream API error fetching details for pokemon ${pokemon}: ${res.status} ${res.statusText}`,
+        );
     }
     return res.json();
 }
@@ -77,7 +77,6 @@ function getDetails(pokemon: number, cache: NodeCache): Promise<Pokemon> {
     });
 }
 
-
 /**
  * Retrieves cached Pokémon details for a given Pokémon ID.
  * @param pokemon - The Pokémon ID.
@@ -97,7 +96,6 @@ function getCachedDetails(pokemon: number, cache: NodeCache): Pokemon | undefine
 function setCachedDetails(pokemon: number, data: Pokemon, cache: NodeCache): void {
     cache.set(pokemon.toString(), data);
 }
-
 
 /**
  * Validates and extracts the Pokémon ID from the input.

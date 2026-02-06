@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
                 message: 'Registration successful!',
                 data: validData,
             },
-            { status: 200 }
+            { status: 200 },
         );
     } catch (err) {
         if (err instanceof ZodError) {
@@ -33,14 +33,14 @@ export async function POST(request: NextRequest) {
                     message: 'Validation failed',
                     errors: err.issues,
                 },
-                { status: 400 }
+                { status: 400 },
             );
         }
 
         console.error('Unexpected error in /api/submit:', err);
         return NextResponse.json(
             { success: false, message: 'Internal server error' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }

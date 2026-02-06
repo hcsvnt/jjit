@@ -37,5 +37,4 @@ export default async function getCurrentDate(): Promise<string> {
     }
 }
 
-
 // todo: add tests
