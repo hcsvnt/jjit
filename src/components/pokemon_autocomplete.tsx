@@ -6,6 +6,23 @@ import type { SearchResponse } from '@/app/api/search/route';
 import { fetcher } from '@/utils/fetcher';
 import useSWR from 'swr';
 
+/**
+ * PokemonAutocomplete
+ *
+ * Controlled autocomplete component for selecting a Pokémon.
+ * - Uses `useSWR` + `fetcher` to query the `/api/search` endpoint when `query` changes.
+ * - Displays results using MUI `Autocomplete` and maps the selected `pokemonId` to the option value.
+ * - Calls `onSearch` for input changes (debounced upstream) and `onChange` with the selected id.
+ * - Renders a `TextField` for input and shows a loading spinner when fetching.
+ *
+ * Props:
+ * @param {string | undefined} query - Current search query to fetch options for.
+ * @param {number | undefined} pokemonId - Currently selected Pokémon id (option value).
+ * @param {(id: number | undefined) => void} onChange - Called with the selected Pokémon id or undefined.
+ * @param {(value: string) => void} onSearch - Called on input change to trigger searching.
+ * @param {string} [formError] - Optional error message to show under the input.
+ * @returns {React.ReactElement} MUI `Autocomplete` element configured for Pokémon search.
+ */
 export default function PokemonAutocomplete({
     query,
     pokemonId,
@@ -37,8 +54,8 @@ export default function PokemonAutocomplete({
                     {...params}
                     label="Pokemon Name"
                     placeholder="Choose"
-                    helperText={formError}
-                    error={!!formError}
+                    helperText={formError || (error && 'Error fetching options')}
+                    error={!!formError || !!error}
                     slotProps={{
                         input: {
                             ...params.InputProps,
