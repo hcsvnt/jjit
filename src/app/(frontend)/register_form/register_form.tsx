@@ -2,18 +2,9 @@
 
 import React from 'react';
 import type { z } from 'zod';
-import {
-    Box,
-    Autocomplete,
-    CircularProgress,
-    Card,
-    CardContent,
-    CardActions,
-    CardHeader,
-} from '@mui/material';
+import { Box, Card, CardContent, CardActions, CardHeader } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useSWR from 'swr';
 
 import { debounce } from '@/utils/debounce';
 import { schema } from './schema';
@@ -23,11 +14,10 @@ import Button from '../../../components/button';
 import { P } from '@/components/typography';
 import TextField from '@/components/text_field';
 import { submit } from './submit';
-import type { SearchResponse } from '@/app/api/search/route';
 import SuccessDialog from '../success_dialog/success_dialog';
 import PokemonDetails from '../pokemon_details/pokemon_details';
-import { fetcher } from '@/utils/fetcher';
-import DateElement from './DateElement';
+
+import PokemonAutocomplete from '@/components/pokemon_autocomplete';
 
 const DEFAULT_VALUES = {
     name: '',
@@ -53,9 +43,6 @@ export default function RegisterForm({ dateElement }: { dateElement: React.React
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [query, setQuery] = React.useState<string | undefined>(undefined);
     const debouncedSetQuery = React.useMemo(() => debounce(setQuery, 200), []);
-    const { data, error, isLoading } = useSWR(query ?? null, () =>
-        fetcher<SearchResponse>('/api/search', { pokemon: query }),
-    );
 
     const [state, action, isPending] = React.useActionState(submit, {
         success: false,
@@ -155,41 +142,12 @@ export default function RegisterForm({ dateElement }: { dateElement: React.React
                             name="pokemon"
                             control={control}
                             render={({ field: { onChange } }) => (
-                                <Autocomplete
-                                    options={data ?? []}
-                                    getOptionLabel={({ name }) => name}
-                                    onChange={(_, option) => onChange(option?.id)}
-                                    onInputChange={(_, inputValue) => debouncedSetQuery(inputValue)}
-                                    value={data?.find(({ id }) => id === watch('pokemon')) || null}
-                                    loading={isLoading}
-                                    loadingText="Loading options..."
-                                    noOptionsText="Start typing to search..."
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Pokemon Name"
-                                            placeholder="Choose"
-                                            helperText={errors.pokemon?.message}
-                                            error={!!errors.pokemon || !!error}
-                                            slotProps={{
-                                                input: {
-                                                    ...params.InputProps,
-                                                    endAdornment: isLoading ? (
-                                                        <CircularProgress
-                                                            color="inherit"
-                                                            size={20}
-                                                            sx={{
-                                                                position: 'relative',
-                                                                left: '20px',
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        params.InputProps.endAdornment
-                                                    ),
-                                                },
-                                            }}
-                                        />
-                                    )}
+                                <PokemonAutocomplete
+                                    query={query}
+                                    pokemonId={watch('pokemon')}
+                                    onChange={onChange}
+                                    onSearch={debouncedSetQuery}
+                                    formError={errors.pokemon?.message}
                                 />
                             )}
                         />
