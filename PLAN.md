@@ -54,6 +54,7 @@
         - Age: required, 16-99
         - Pokemon: required, must be selected from suggestions
     - Autocomplete functionality:
+        - pretend the underlying dataset is too large to load initially
         - fetch suggestions from /api/search as user types
         - debounce input to limit API calls (200ms)\*\*\*\*
         - cache suggestions to improve performance

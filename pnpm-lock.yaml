@@ -20,6 +20,9 @@ importers:
       '@mui/material':
         specifier: ^7.3.7
         version: 7.3.7(@emotion/react@11.14.0(@types/react@19.2.11)(react@19.2.3))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.11)(react@19.2.3))(@types/react@19.2.11)(react@19.2.3))(@types/react@19.2.11)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      ExpandMore:
+        specifier: link:@mui/icons-material/ExpandMore
+        version: link:@mui/icons-material/ExpandMore
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0

@@ -24,6 +24,7 @@ import type { Pokemon } from '@/types';
 import theme from '@/theme/theme';
 import Button from '../../../components/button';
 import { List, ListItem, P } from '@/components/typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TextField from '@/components/text_field';
 import { submit } from './submit';
 import type { SearchResponse } from '@/app/api/search/route';
@@ -145,6 +146,20 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                                         placeholder="Choose"
                                         helperText={errors.pokemon?.message}
                                         error={!!errors.pokemon}
+                                        slotProps={{
+                                            input: {
+                                                ...params.InputProps,
+                                                endAdornment: isLoading ? (
+                                                    <CircularProgress
+                                                        color="inherit"
+                                                        size={20}
+                                                        sx={{ position: 'relative', left: '20px' }}
+                                                    />
+                                                ) : (
+                                                    params.InputProps.endAdornment
+                                                ),
+                                            },
+                                        }}
                                     />
                                 )}
                             />

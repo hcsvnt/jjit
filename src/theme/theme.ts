@@ -156,6 +156,7 @@ export const theme = createTheme({
         MuiAutocomplete: {
             styleOverrides: {
                 root: { textTransform: 'capitalize' },
+                input: { textTransform: 'capitalize' },
                 paper: { textTransform: 'capitalize' },
             }
         },
