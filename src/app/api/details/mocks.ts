@@ -1,5 +1,4 @@
 import type { Pokemon } from '@/types';
-// import { schema } from '../schema';
 
 export const pikachu = {
     id: 25,
