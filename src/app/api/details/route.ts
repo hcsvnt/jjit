@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
  * @returns A promise that resolves to the Pokémon details.
  * @throws An error if the upstream API request fails.
  */
-async function fetchDetails(pokemon: number): Promise<Pokemon> {
+export async function fetchDetails(pokemon: number): Promise<Pokemon> {
     const { POKEAPI_BASE_URL } = process.env;
     if (!POKEAPI_BASE_URL) {
         throw new Error('POKEAPI_BASE_URL is not configured');
@@ -64,7 +64,7 @@ async function fetchDetails(pokemon: number): Promise<Pokemon> {
  * @param cache - The NodeCache instance for caching results.
  * @returns A promise that resolves to the Pokémon details.
  */
-function getDetails(pokemon: number, cache: NodeCache): Promise<Pokemon> {
+export function getDetails(pokemon: number, cache: NodeCache): Promise<Pokemon> {
     const cached = getCachedDetails(pokemon, cache);
     if (cached) {
         return Promise.resolve(cached);
@@ -82,7 +82,7 @@ function getDetails(pokemon: number, cache: NodeCache): Promise<Pokemon> {
  * @param cache - The NodeCache instance to use for retrieving cached data.
  * @returns The cached Pokémon details or undefined if not found.
  */
-function getCachedDetails(pokemon: number, cache: NodeCache): Pokemon | undefined {
+export function getCachedDetails(pokemon: number, cache: NodeCache): Pokemon | undefined {
     return cache.get(pokemon.toString());
 }
 
@@ -92,7 +92,7 @@ function getCachedDetails(pokemon: number, cache: NodeCache): Pokemon | undefine
  * @param data - The Pokémon details to cache.
  * @param cache - The NodeCache instance to use for caching data.
  */
-function setCachedDetails(pokemon: number, data: Pokemon, cache: NodeCache): void {
+export function setCachedDetails(pokemon: number, data: Pokemon, cache: NodeCache): void {
     cache.set(pokemon.toString(), data);
 }
 
@@ -102,7 +102,7 @@ function setCachedDetails(pokemon: number, data: Pokemon, cache: NodeCache): voi
  * @returns The validated Pokémon ID.
  * @throws ZodError if validation fails.
  */
-function getValidatedInput(input: unknown): number {
+export function getValidatedInput(input: unknown): number {
     const validatedData = schema.safeParse(input);
     if (!validatedData.success) {
         throw new ZodError(validatedData.error.issues);
