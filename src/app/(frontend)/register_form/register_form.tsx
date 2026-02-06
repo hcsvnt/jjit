@@ -1,13 +1,12 @@
 'use client';
-import { debounce } from '@/utils/debounce';
-import React, { useState, useCallback, useMemo } from 'react';
+
+import React from 'react';
+import type { z } from 'zod';
 import {
     Box,
-    // TextField,
     Autocomplete,
     CircularProgress,
     Alert,
-    Typography,
     Card,
     CardContent,
     CardActions,
@@ -17,20 +16,17 @@ import {
 import Image from 'next/image';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import useSWR from 'swr';
+
+import { debounce } from '@/utils/debounce';
 import { schema, type FormSubmission } from './schema';
-import type { PokemonJSON, Pokemon } from '@/types';
+import type { Pokemon } from '@/types';
 import theme from '@/theme/theme';
 import Button from '../../../components/button';
 import { P } from '@/components/typography';
 import TextField from '@/components/text_field';
-// import Autocomplete from '@/components/autocomplete';
-import type * as z from 'zod';
-
 import { submit } from './submit';
-import useSWR from 'swr';
 import type { SearchResponse } from '@/app/api/search/route';
-
-type PokemonOption = PokemonJSON['data'][number];
 
 const DEFAULT_VALUES: FormSubmission = {
     name: '',
@@ -38,18 +34,17 @@ const DEFAULT_VALUES: FormSubmission = {
     pokemon: 0,
 } as const;
 
-// const DEFAULT_VALUES: FormSubmission = {
-//     name: 'Teddy',
-//     age: 17,
-//     pokemon: 1,
-// } as const;
-
-function genericFetcher<T>(url: string, body: Record<string, any>): Promise<T> {
+/**
+ * Generic fetcher for SWR that makes POST requests with JSON body.
+ * @param url - The API endpoint URL
+ * @param body - The request body object
+ * @returns Promise resolving to the JSON response
+ * @throws Error if the response is not ok
+ */
+function genericFetcher<T>(url: string, body: Record<string, unknown>): Promise<T> {
     return fetch(url, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
     }).then((res) => {
         if (!res.ok) {
@@ -60,13 +55,9 @@ function genericFetcher<T>(url: string, body: Record<string, any>): Promise<T> {
 }
 
 export default function RegisterForm({ header }: { header: React.ReactNode }) {
-    const [query, setQuery] = useState<string | undefined>(undefined);
+    const [query, setQuery] = React.useState<string | undefined>(undefined);
     const debouncedSetQuery = React.useMemo(() => debounce(setQuery, 200), []);
-    const {
-        data: data,
-        error,
-        isLoading,
-    } = useSWR(query ?? null, () =>
+    const { data, error, isLoading } = useSWR(query ?? null, () =>
         genericFetcher<SearchResponse>('/api/search', { pokemon: query }),
     );
 
@@ -99,7 +90,6 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
             action(formData);
         });
     };
-
 
     return (
         <Card sx={{ maxWidth: 544, padding: '32px' }}>
@@ -143,11 +133,11 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                     <Controller
                         name="pokemon"
                         control={control}
-                        render={({ field: { onChange, value } }) => (
+                        render={({ field: { onChange } }) => (
                             <Autocomplete
-                                options={data || []}
+                                options={data ?? []}
                                 getOptionLabel={({ name }) => name}
-                                onChange={(_, value) => onChange(value?.id)}
+                                onChange={(_, option) => onChange(option?.id)}
                                 onInputChange={(_, inputValue) => debouncedSetQuery(inputValue)}
                                 loading={isLoading}
                                 noOptionsText="No options available"
@@ -173,7 +163,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                                 justifyContent: 'center',
                             }}
                         >
-                            <DetailsContent pokemonId={watch('pokemon')} />
+                            <PokemonDetails pokemonId={watch('pokemon')} />
                         </CardContent>
                     </Card>
                 </CardContent>
@@ -190,14 +180,10 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
     );
 }
 
-function DetailsContent({ pokemonId }: { pokemonId: number }) {
+function PokemonDetails({ pokemonId }: { pokemonId: number }) {
     const { data, error, isLoading } = useSWR(pokemonId ? [`/api/details`, pokemonId] : null, () =>
         genericFetcher<Pokemon>(`/api/details`, { pokemon: pokemonId }),
     );
-    const { name, types, base_experience, id, sprites } = data || {};
-
-    console.log({ data });
-    // name, type, base ex  perience, id, sprite
 
     if (isLoading) {
         return <CircularProgress />;
@@ -211,12 +197,12 @@ function DetailsContent({ pokemonId }: { pokemonId: number }) {
         return <P sx={{ color: theme.palette.grey[200] }}>Your pokemon</P>;
     }
 
+    const { name, types, base_experience, id, sprites } = data;
+
     return (
         <Box sx={{ textAlign: 'center' }}>
-            {sprites && (
-                <div>
-                    <Image src={sprites.front_default} alt={name ?? ''} width={96} height={96} />
-                </div>
+            {sprites?.front_default && (
+                <Image src={sprites.front_default} alt={name} width={96} height={96} />
             )}
             <P variant="h6">Name: {name}</P>
             <P variant="body2">
