@@ -34,6 +34,19 @@ const DEFAULT_VALUES = {
     pokemon: '',
 } as unknown as FormSubmission; // A bit of a hack to force empty inputs, while keeping the validation easy.
 
+/**
+ * Registration form component.
+ *
+ * Renders a trainer registration form with fields for name, age and Pokémon.
+ * - Validates inputs via a shared Zod `schema` (client + server).
+ * - Performs debounced autocomplete searches (200ms) against `/api/search`.
+ * - Keeps the selected Pokémon id in the form state and shows a preview using `PokemonDetails`.
+ * - Submits using the server action `submit` and shows `SuccessDialog` on success.
+ *
+ * Props:
+ * @param {{ header: React.ReactNode }} props.header - content shown in the header (e.g. current date).
+ * @returns {JSX.Element}
+ */
 export default function RegisterForm({ header }: { header: React.ReactNode }) {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [query, setQuery] = React.useState<string | undefined>(undefined);
@@ -89,109 +102,118 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
     }, [state.success]);
 
     return (
-        <Card sx={{ maxWidth: 544, padding: '32px' }}>
-            <SuccessDialog open={dialogOpen} onClose={onReset} />
-            <CardHeader
-                title={<P sx={{ fontSize: '12px', textAlign: 'right' }}>{header}</P>}
-                sx={{ padding: 0 }}
-            />
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <CardContent sx={{ paddingInline: 0 }}>
-                    <Box sx={{ display: 'flex', gap: '24px', mb: '24px' }}>
-                        <Controller
-                            name="name"
-                            control={control}
-                            render={({ field, fieldState }) => (
-                                <TextField
-                                    label="Trainer's Name"
-                                    placeholder="Trainer's Name"
-                                    autoComplete="given-name"
-                                    helperText={fieldState.error?.message}
-                                    error={!!fieldState.error}
-                                    {...field}
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name="age"
-                            control={control}
-                            render={({ field, fieldState }) => (
-                                <TextField
-                                    label="Trainer's Age"
-                                    placeholder="Trainer's Age"
-                                    autoComplete="age"
-                                    type="number"
-                                    helperText={fieldState.error?.message}
-                                    error={!!fieldState.error}
-                                    {...field}
-                                />
-                            )}
-                        />
-                    </Box>
-
-                    <Controller
-                        name="pokemon"
-                        control={control}
-                        render={({ field: { onChange } }) => (
-                            <Autocomplete
-                                options={data ?? []}
-                                getOptionLabel={({ name }) => name}
-                                onChange={(_, option) => onChange(option?.id)}
-                                onInputChange={(_, inputValue) => debouncedSetQuery(inputValue)}
-                                value={data?.find(({ id }) => id === watch('pokemon')) || null}
-                                loading={isLoading}
-                                loadingText="Loading options..."
-                                noOptionsText="No options available"
-                                renderInput={(params) => (
+        <>
+            <Card sx={{ maxWidth: 544, padding: '32px' }}>
+                <CardHeader
+                    title={<P sx={{ fontSize: '12px', textAlign: 'right' }}>{header}</P>}
+                    sx={{ padding: 0 }}
+                />
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <CardContent sx={{ paddingInline: 0 }}>
+                        <Box sx={{ display: 'flex', gap: '24px', mb: '24px' }}>
+                            <Controller
+                                name="name"
+                                control={control}
+                                render={({ field, fieldState }) => (
                                     <TextField
-                                        {...params}
-                                        label="Pokemon Name"
-                                        placeholder="Choose"
-                                        helperText={errors.pokemon?.message}
-                                        error={!!errors.pokemon || !!error}
-                                        slotProps={{
-                                            input: {
-                                                ...params.InputProps,
-                                                endAdornment: isLoading ? (
-                                                    <CircularProgress
-                                                        color="inherit"
-                                                        size={20}
-                                                        sx={{ position: 'relative', left: '20px' }}
-                                                    />
-                                                ) : (
-                                                    params.InputProps.endAdornment
-                                                ),
-                                            },
-                                        }}
+                                        label="Trainer's Name"
+                                        placeholder="Trainer's Name"
+                                        autoComplete="given-name"
+                                        helperText={fieldState.error?.message}
+                                        error={!!fieldState.error}
+                                        {...field}
                                     />
                                 )}
                             />
-                        )}
-                    />
 
-                    <Card sx={{ mt: '24px' }}>
-                        <CardContent
-                            sx={{
-                                height: '254px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            <PokemonDetails pokemonId={watch('pokemon')} />
-                        </CardContent>
-                    </Card>
-                </CardContent>
-                <CardActions sx={{ justifyContent: 'end', gap: '16px', paddingInline: 0, pb: 0 }}>
-                    <Button type="reset" variant="soft" onClick={onReset}>
-                        Reset
-                    </Button>
-                    <Button type="submit" variant="primary" disabled={isPending}>
-                        Submit
-                    </Button>
-                </CardActions>
-            </form>
-        </Card>
+                            <Controller
+                                name="age"
+                                control={control}
+                                render={({ field, fieldState }) => (
+                                    <TextField
+                                        label="Trainer's Age"
+                                        placeholder="Trainer's Age"
+                                        autoComplete="age"
+                                        type="number"
+                                        helperText={fieldState.error?.message}
+                                        error={!!fieldState.error}
+                                        {...field}
+                                    />
+                                )}
+                            />
+                        </Box>
+
+                        <Controller
+                            name="pokemon"
+                            control={control}
+                            render={({ field: { onChange } }) => (
+                                <Autocomplete
+                                    options={data ?? []}
+                                    getOptionLabel={({ name }) => name}
+                                    onChange={(_, option) => onChange(option?.id)}
+                                    onInputChange={(_, inputValue) => debouncedSetQuery(inputValue)}
+                                    value={data?.find(({ id }) => id === watch('pokemon')) || null}
+                                    loading={isLoading}
+                                    loadingText="Loading options..."
+                                    noOptionsText="No options available"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Pokemon Name"
+                                            placeholder="Choose"
+                                            helperText={errors.pokemon?.message}
+                                            error={!!errors.pokemon || !!error}
+                                            slotProps={{
+                                                input: {
+                                                    ...params.InputProps,
+                                                    endAdornment: isLoading ? (
+                                                        <CircularProgress
+                                                            color="inherit"
+                                                            size={20}
+                                                            sx={{
+                                                                position: 'relative',
+                                                                left: '20px',
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        params.InputProps.endAdornment
+                                                    ),
+                                                },
+                                            }}
+                                        />
+                                    )}
+                                />
+                            )}
+                        />
+
+                        <Card sx={{ mt: '24px' }}>
+                            <CardContent
+                                sx={{
+                                    height: '254px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <PokemonDetails pokemonId={watch('pokemon')} />
+                            </CardContent>
+                        </Card>
+                    </CardContent>
+
+                    <CardActions
+                        sx={{ justifyContent: 'end', gap: '16px', paddingInline: 0, pb: 0 }}
+                    >
+                        <Button type="reset" variant="soft" onClick={onReset}>
+                            Reset
+                        </Button>
+                        <Button type="submit" variant="primary" disabled={isPending}>
+                            Submit
+                        </Button>
+                    </CardActions>
+                </form>
+            </Card>
+
+            <SuccessDialog open={dialogOpen} onClose={onReset} />
+        </>
     );
 }

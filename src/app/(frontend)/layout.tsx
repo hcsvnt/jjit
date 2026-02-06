@@ -3,11 +3,21 @@ import fonts from '@/utils/fonts';
 import { MuiThemeProvider } from '@/providers/theme-provider';
 import './globals.css';
 
+/** Page metadata for the frontend app. */
 export const metadata: Metadata = {
     title: 'Pokemon Teacher Registration',
     description: 'A simple app to register as a Pokemon Teacher and select your favorite Pokemon.',
 };
 
+/**
+ * RootLayout
+ *
+ * Top-level layout for the frontend app. Adds favicons/manifest and wraps
+ * content in the `MuiThemeProvider` and the app font.
+ *
+ * @param {{ children: React.ReactNode }} props.children - app content
+ * @returns {JSX.Element}
+ */
 export default function RootLayout({
     children,
 }: Readonly<{

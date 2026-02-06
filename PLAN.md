@@ -78,7 +78,7 @@
 
 - UI Page
     - a page to display ui elements and their variants and states for review
-    - like a super-simple storybook, which would be overkill for this task
+    - like a super-simple storybook (which would be overkill for this)
 
 \*\*\*\* 200ms is below typical human reaction time, so it should feel instantaneous while still reducing API calls. This is always a trade-off, the more we want to spare API calls, the longer the debounce delay used,
 but here the backend lookup is quite fast and cached, so we can afford better UX.
@@ -86,6 +86,8 @@ but here the backend lookup is quite fast and cached, so we can afford better UX
 # Development notes
 
 - [x] add favicon
-- [ ] not explicitly required and missing in the design file, but adjust for mobile devices
-- [ ] add metadata for seo
-- [ ] default letter spacing seems off
+- [x] not explicitly required and missing in the design file, but adjust for mobile devices
+- [x] add metadata for seo
+- [] dockerize
+- [] add README with instructions to run the app and tests etc
+- [] deploy

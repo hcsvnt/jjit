@@ -1,3 +1,9 @@
+/*
+ * Test fixtures for the register form server action and UI integration tests.
+ * - `valid`: a valid submission object
+ * - `noPokemon`: submission with invalid pokemon id
+ * - `underage`: submission failing age validation
+ */
 import type { FormSubmission } from './schema';
 
 const valid = {

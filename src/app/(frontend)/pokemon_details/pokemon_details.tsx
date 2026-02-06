@@ -9,6 +9,15 @@ import { List, ListItem, P, Span } from '@/components/typography';
 
 import { fetcher } from '@/utils/fetcher';
 
+/**
+ * PokemonDetails
+ *
+ * Displays a preview of the selected Pokémon. Fetches details via SWR when a
+ * valid `pokemonId` is provided. Renders loading, error and empty states.
+ *
+ * @param {{ pokemonId: number }} props.pokemonId - The numeric id of the selected Pokémon.
+ * @returns {JSX.Element}
+ */
 export default function PokemonDetails({ pokemonId }: { pokemonId: number }) {
     const { data, error, isLoading } = useSWR(pokemonId ? [`/api/details`, pokemonId] : null, () =>
         fetcher<Pokemon>(`/api/details`, { pokemon: pokemonId }),

@@ -3,6 +3,15 @@ import Card from '@mui/material/Card';
 import Dialog from '@mui/material/Dialog';
 import { P } from '@/components/typography';
 
+/**
+ * SuccessDialog
+ *
+ * Modal dialog displayed after a successful form submission. Provides a
+ * button to reset/close the dialog and clear the form.
+ *
+ * @param {{ open: boolean, onClose: () => void }} props
+ * @returns {JSX.Element}
+ */
 export default function SuccessDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
     return (
         <Dialog open={open} onClose={onClose}>
