@@ -146,7 +146,7 @@ export const theme = createTheme({
 
                     'p.MuiFormHelperText-root': {
                         marginLeft: 0,
-                        color: colors.foreground
+                        color: colors.error,
                     }
                 },
             },
