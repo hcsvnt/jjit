@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import { he } from 'zod/locales';
 
 declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {
@@ -144,6 +145,8 @@ export const theme = createTheme({
                     },
 
                     'p.MuiFormHelperText-root': {
+                        position: 'absolute', // prevent layout shift, shouldn't collide
+                        top: '100%',
                         marginLeft: 0,
                         color: colors.error,
                     },
