@@ -1,18 +1,44 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import { vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { SWRConfig } from 'swr';
+
+const { mockFetcher } = vi.hoisted(() => ({
+    mockFetcher: vi.fn(),
+}));
 
 vi.mock('@/utils/fetcher', () => ({
-  fetcher: vi.fn(() => Promise.resolve(null)),
+    fetcher: mockFetcher,
 }));
 
 import PokemonDetails from './pokemon_details';
 
-describe('PokemonDetails', () => {
-  it('renders placeholder when no data', () => {
-    const { getByText } = render(<PokemonDetails pokemonId={0} />);
-    expect(getByText(/Your pokemon/i)).toBeTruthy();
-  });
+const renderWithSWR = (ui: React.ReactElement) =>
+    render(<SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>{ui}</SWRConfig>);
 
-  // Additional tests for loading/error/data states should be added using SWR or fetcher mocks.
+describe('PokemonDetails', () => {
+    beforeEach(() => {
+        mockFetcher.mockClear();
+    });
+
+    it('renders placeholder when no pokemonId provided', () => {
+        renderWithSWR(<PokemonDetails pokemonId={0} />);
+        expect(screen.getByText(/Your pokemon/i)).toBeTruthy();
+        expect(mockFetcher).not.toHaveBeenCalled();
+    });
+
+    it('renders loading state', () => {
+        // Mock SWR loading state
+        mockFetcher.mockImplementation(() => new Promise(() => {}));
+        renderWithSWR(<PokemonDetails pokemonId={1} />);
+
+        expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    });
+
+    it('renders error state', async () => {
+        mockFetcher.mockRejectedValue(new Error('Failed to fetch'));
+        renderWithSWR(<PokemonDetails pokemonId={25} />);
+
+        const errorAlert = await screen.findByRole('alert');
+        expect(errorAlert).toHaveTextContent('Failed to load Pokémon details.');
+    });
 });
