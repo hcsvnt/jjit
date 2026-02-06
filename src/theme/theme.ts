@@ -54,6 +54,16 @@ export const theme = createTheme({
         fontSize: 14,
     },
     components: {
+
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    boxShadow: 'none',
+                    border: 'var(--border)',
+                }
+            }
+        },
+
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -115,6 +125,11 @@ export const theme = createTheme({
         MuiTextField: {
             styleOverrides: {
                 root: {
+
+                    '& fieldset': {
+                        border: 'var(--border)',
+                    },
+
                     "& .MuiOutlinedInput-root": {
                         "&:hover .MuiOutlinedInput-notchedOutline": {
                             border: '1px solid var(--color-primary)',
@@ -133,20 +148,6 @@ export const theme = createTheme({
                         marginLeft: 0,
                         color: colors.foreground
                     }
-
-
-
-                    // '& .MuiOutlinedInput-root': {
-                    //     '& fieldset': {
-                    //         borderColor: colors.grey300,
-                    //     },
-                    //     '&:hover fieldset': {
-                    //         borderColor: colors.grey200,
-                    //     },
-                    //     '&.Mui-focused fieldset': {
-                    //         borderColor: colors.primary,
-                    //     },
-                    // },
                 },
             },
         },

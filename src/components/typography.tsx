@@ -2,9 +2,9 @@ import MuiTypography from '@mui/material/Typography';
 
 type Props = React.ComponentProps<typeof MuiTypography>;
 
-export function P({ children, ...props }: Props) {
+export function P({ children, sx, ..._props }: Props) {
     return (
-        <MuiTypography variant="body1" component="p">
+        <MuiTypography variant="body1" component="p" sx={{ ...sx }}>
             {children}
         </MuiTypography>
     );
