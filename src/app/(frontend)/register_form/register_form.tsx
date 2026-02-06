@@ -19,24 +19,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import useSWR from 'swr';
 
 import { debounce } from '@/utils/debounce';
-import { schema, type FormSubmission } from './schema';
+import { FormSubmission, schema } from './schema';
 import type { Pokemon } from '@/types';
 import theme from '@/theme/theme';
 import Button from '../../../components/button';
-import { List, ListItem, P } from '@/components/typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { List, ListItem, P, Span } from '@/components/typography';
 import TextField from '@/components/text_field';
 import { submit } from './submit';
 import type { SearchResponse } from '@/app/api/search/route';
+import SuccessDialog from './success_dialog';
+
+const DEFAULT_VALUES = {
+    name: '',
+    age: '',
+    pokemon: '',
+} as unknown as FormSubmission;
 
 /**
- * Generic fetcher for SWR that makes POST requests with JSON body.
+ * Fetcher for SWR that makes POST requests with JSON body.
+ * Pass the expected response type as a generic parameter.
+ *
  * @param url - The API endpoint URL
  * @param body - The request body object
  * @returns Promise resolving to the JSON response
  * @throws Error if the response is not ok
  */
-function genericFetcher<T>(url: string, body: Record<string, unknown>): Promise<T> {
+function fetcher<T>(url: string, body: Record<string, unknown>): Promise<T> {
     return fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,16 +58,17 @@ function genericFetcher<T>(url: string, body: Record<string, unknown>): Promise<
 }
 
 export default function RegisterForm({ header }: { header: React.ReactNode }) {
+    const [dialogOpen, setDialogOpen] = React.useState(false);
     const [query, setQuery] = React.useState<string | undefined>(undefined);
     const debouncedSetQuery = React.useMemo(() => debounce(setQuery, 200), []);
     const { data, error, isLoading } = useSWR(query ?? null, () =>
-        genericFetcher<SearchResponse>('/api/search', { pokemon: query }),
+        fetcher<SearchResponse>('/api/search', { pokemon: query }),
     );
 
     const [state, action, isPending] = React.useActionState(submit, {
         success: false,
         message: '',
-        fields: { name: '', age: 0, pokemon: 0 }, // types here need to be strictly aligned with FormSubmission...
+        fields: { ...DEFAULT_VALUES },
     });
 
     const {
@@ -67,10 +76,10 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
         reset,
         handleSubmit,
         watch,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
-        defaultValues: { name: '', age: undefined, pokemon: undefined }, // but here we want them undefined to start with empty fields
+        defaultValues: { ...DEFAULT_VALUES },
         mode: 'onBlur',
         reValidateMode: 'onBlur',
     });
@@ -86,8 +95,25 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
         });
     };
 
+    const onReset = () => {
+        reset();
+        setQuery('');
+        setDialogOpen(false);
+    };
+
+    /**
+     * This is necessary as empty state of the form can't be derived from either
+     * the action state or hook form.
+     */
+    React.useEffect(() => {
+        if (state.success) {
+            setDialogOpen(true);
+        }
+    }, [state.success]);
+
     return (
         <Card sx={{ maxWidth: 544, padding: '32px' }}>
+            <SuccessDialog open={dialogOpen} onClose={onReset} />
             <CardHeader
                 title={<P sx={{ fontSize: '12px', textAlign: 'right' }}>{header}</P>}
                 sx={{ padding: 0 }}
@@ -136,6 +162,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                                 getOptionLabel={({ name }) => name}
                                 onChange={(_, option) => onChange(option?.id)}
                                 onInputChange={(_, inputValue) => debouncedSetQuery(inputValue)}
+                                value={data?.find(({ id }) => id === watch('pokemon')) || null}
                                 loading={isLoading}
                                 loadingText="Loading options..."
                                 noOptionsText="No options available"
@@ -180,10 +207,10 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                     </Card>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'end', gap: '16px', paddingInline: 0, pb: 0 }}>
-                    <Button type="reset" variant="soft" onClick={reset}>
+                    <Button type="reset" variant="soft" onClick={onReset}>
                         Reset
                     </Button>
-                    <Button type="submit" variant="primary">
+                    <Button type="submit" variant="primary" disabled={isPending}>
                         Submit
                     </Button>
                 </CardActions>
@@ -194,7 +221,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
 
 function PokemonDetails({ pokemonId }: { pokemonId: number }) {
     const { data, error, isLoading } = useSWR(pokemonId ? [`/api/details`, pokemonId] : null, () =>
-        genericFetcher<Pokemon>(`/api/details`, { pokemon: pokemonId }),
+        fetcher<Pokemon>(`/api/details`, { pokemon: pokemonId }),
     );
 
     if (isLoading) {
@@ -219,7 +246,7 @@ function PokemonDetails({ pokemonId }: { pokemonId: number }) {
             <List>
                 <ListItem sx={{ textTransform: 'capitalize' }}>Name: {name}</ListItem>
                 <ListItem sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    Type:{' '}
+                    <Span>Type: </Span>
                     {types?.map((type) => (
                         <Chip key={type.type.name} label={type.type.name} />
                     ))}
