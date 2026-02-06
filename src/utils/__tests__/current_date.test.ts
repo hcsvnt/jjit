@@ -25,7 +25,7 @@ describe('getCurrentDate', () => {
             Promise.resolve({
                 json: () => Promise.resolve(mockResponse),
                 ok: true,
-            } as unknown as Response)
+            } as unknown as Response),
         );
 
         const result = await getCurrentDate();
@@ -52,7 +52,7 @@ describe('getCurrentDate', () => {
             Promise.resolve({
                 json: () => Promise.resolve({}),
                 ok: false,
-            } as unknown as Response)
+            } as unknown as Response),
         );
 
         const result = await getCurrentDate();
@@ -65,7 +65,7 @@ describe('getCurrentDate', () => {
             Promise.resolve({
                 json: () => Promise.resolve({ dayOfWeek: 'Monday', date: '01/01/2026' }),
                 ok: true,
-            } as unknown as Response)
+            } as unknown as Response),
         );
         global.fetch = mockFetch;
 

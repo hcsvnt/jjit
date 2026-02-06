@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JJIT — Pokémon Trainer Registration (Next.js)
 
-## Getting Started
+This repository contains a small Next.js + TypeScript app implementing a Pokémon Trainer registration form used for demonstration and interview purposes.
 
-First, run the development server:
+## What this project implements
+
+- A registration form for a trainer (name, age, Pokémon selection).
+- Autocomplete search backed by an API route that performs fuzzy search over the provided `pokemon.json` dataset (Fuse.js + server-side caching + debounce on the client).
+- Pokémon details preview fetched via a server-side proxy route to the PokeAPI with caching.
+- Server action to handle form submission with shared Zod validation (same schema on client and server).
+- Lightweight component and integration tests using Vitest + React Testing Library.
+
+The original task and requirements are documented in `TODO.md` and `PLAN.md` at the repository root.
+
+## Quickstart
+
+Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+Run the dev server:
+
+```bash
 pnpm dev
-# or
-bun dev
+```
+
+Run tests:
+
+```bash
+pnpm test
+```
+
+Run coverage:
+
+```bash
+pnpm test:coverage
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+ANALYZE_BUNDLE - set to `true` to enable bundle analysis with `next-bundle-analyzer`
+SERVER_URL e.g. http://localhost:3000. In production, this should be set to the actual URL where the app is hosted.
+POKEAPI_BASE_URL - base URL for the PokeAPI as provided for the task.
+TIME_API_URL= URL for the Time API as provided for the task.
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+You can see [the live version of the app](https://jjit.coolify.hallala.work) deployed to my VPS in a docker container.
+But the app can be easily deployed anywhere Node runs.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Requirements (summary)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Use Next.js + TypeScript.
+- Trainer `name` must be 2–20 characters.
+- Trainer `age` must be between 16 and 99.
+- `Pokemon name` is an autocomplete that queries `/api/search` (fuzzy search + debounce + caching) and requires selection from suggestions.
+- Selected Pokémon details are displayed below the input (fetched through `/api/details`).
+- Submitting validates via Zod; valid submissions show a success dialog; reset clears the form.
 
-## Deploy on Vercel
+Refer to `TODO.md` for the full original checklist and acceptance criteria.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project structure (relevant files)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/(frontend)/...` - all the frontend pages and components:`
+- `app/api/` - API routes for search and details (form submission is a server action colocated with the form component).
+
+- `src/components/` — reusable UI components and primitives (buttons, inputs, etc).
+- `src/utils/` — utility functions shared across the app
+- `src/tests/` — global test setup and utilities.
+
+## Routes
+
+- `/` — registration form page
+- `/ui` — a simple page showcasing UI components and their states (not explicitly required, but useful for review and testing, like a super simple Storybook)
+
+## Testing
+
+- Tests use Vitest + @testing-library/react. Global test setup is in `src/tests/setup.ts`.
+- Test files are colocated with their respective components or routes (e.g. `register_form.test.tsx` next to `register_form.tsx`).
+- to run tests: `pnpm test`
+- to run tests with coverage: `pnpm test:coverage`
+
+---

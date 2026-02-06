@@ -144,8 +144,13 @@ export const theme = createTheme({
                     },
 
                     'p.MuiFormHelperText-root': {
+                        position: 'absolute', // prevent layout shift
+                        top: '100%',
                         marginLeft: 0,
                         color: colors.error,
+                        '@media (max-width: 768px)': {
+                            lineHeight: '1em', // shouldn't collide
+                        },
                     },
                 },
             },

@@ -12,11 +12,11 @@
  * @returns A debounced function.
  */
 export function debounce<F extends (...args: any[]) => any>(callback: F, timeout = 300) {
-    let timer = 0;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
     return (...args: Parameters<F>) => {
-        if (timer) window.clearTimeout(timer);
-        timer = window.setTimeout(() => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
             callback(...args);
         }, timeout);
     };

@@ -12,7 +12,10 @@ describe('fetcher', () => {
         const responseData = { ok: true, value: 'ok' };
 
         global.fetch = vi.fn(() =>
-            Promise.resolve({ ok: true, json: () => Promise.resolve(responseData) } as unknown as Response)
+            Promise.resolve({
+                ok: true,
+                json: () => Promise.resolve(responseData),
+            } as unknown as Response),
         );
 
         const res = await fetcher<typeof responseData>(url, body);
@@ -41,7 +44,7 @@ describe('fetcher', () => {
 
     it('sends correct headers', async () => {
         global.fetch = vi.fn(() =>
-            Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as unknown as Response)
+            Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as unknown as Response),
         );
 
         await fetcher('/api/test', { test: 'data' });
@@ -50,7 +53,7 @@ describe('fetcher', () => {
             '/api/test',
             expect.objectContaining({
                 headers: { 'Content-Type': 'application/json' },
-            })
+            }),
         );
     });
 });
