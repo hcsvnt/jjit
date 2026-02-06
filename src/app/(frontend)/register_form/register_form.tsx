@@ -23,16 +23,10 @@ import { schema, type FormSubmission } from './schema';
 import type { Pokemon } from '@/types';
 import theme from '@/theme/theme';
 import Button from '../../../components/button';
-import { P } from '@/components/typography';
+import { List, ListItem, P } from '@/components/typography';
 import TextField from '@/components/text_field';
 import { submit } from './submit';
 import type { SearchResponse } from '@/app/api/search/route';
-
-const DEFAULT_VALUES: FormSubmission = {
-    name: '',
-    age: 0,
-    pokemon: 0,
-} as const;
 
 /**
  * Generic fetcher for SWR that makes POST requests with JSON body.
@@ -64,7 +58,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
     const [state, action, isPending] = React.useActionState(submit, {
         success: false,
         message: '',
-        fields: { ...DEFAULT_VALUES },
+        fields: { name: '', age: 0, pokemon: 0 }, // types here need to be strictly aligned with FormSubmission...
     });
 
     const {
@@ -75,7 +69,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
         formState: { errors },
     } = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
-        defaultValues: { ...DEFAULT_VALUES },
+        defaultValues: { name: '', age: undefined, pokemon: undefined }, // but here we want them undefined to start with empty fields
         mode: 'onBlur',
         reValidateMode: 'onBlur',
     });
@@ -107,6 +101,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                                 <TextField
                                     label="Trainer's Name"
                                     placeholder="Trainer's Name"
+                                    autoComplete="given-name"
                                     helperText={fieldState.error?.message}
                                     error={!!fieldState.error}
                                     {...field}
@@ -121,6 +116,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                                 <TextField
                                     label="Trainer's Age"
                                     placeholder="Trainer's Age"
+                                    autoComplete="age"
                                     type="number"
                                     helperText={fieldState.error?.message}
                                     error={!!fieldState.error}
@@ -140,6 +136,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
                                 onChange={(_, option) => onChange(option?.id)}
                                 onInputChange={(_, inputValue) => debouncedSetQuery(inputValue)}
                                 loading={isLoading}
+                                loadingText="Loading options..."
                                 noOptionsText="No options available"
                                 renderInput={(params) => (
                                     <TextField
@@ -200,19 +197,21 @@ function PokemonDetails({ pokemonId }: { pokemonId: number }) {
     const { name, types, base_experience, id, sprites } = data;
 
     return (
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
             {sprites?.front_default && (
-                <Image src={sprites.front_default} alt={name} width={96} height={96} />
+                <Image src={sprites.front_default} alt={name} width={195} height={195} />
             )}
-            <P variant="h6">Name: {name}</P>
-            <P variant="body2">
-                Type:{' '}
-                {types?.map((type) => (
-                    <Chip key={type.type.name} label={type.type.name} />
-                ))}
-            </P>
-            <P variant="body2">Base Experience: {base_experience}</P>
-            <P variant="body2">ID: {id}</P>
+            <List>
+                <ListItem sx={{ textTransform: 'capitalize' }}>Name: {name}</ListItem>
+                <ListItem sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    Type:{' '}
+                    {types?.map((type) => (
+                        <Chip key={type.type.name} label={type.type.name} />
+                    ))}
+                </ListItem>
+                <ListItem>Base Experience: {base_experience}</ListItem>
+                <ListItem>Id: {id}</ListItem>
+            </List>
         </Box>
     );
 }

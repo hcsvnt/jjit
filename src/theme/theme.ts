@@ -109,6 +109,7 @@ export const theme = createTheme({
                 root: {
                     fontSize: '12px',
                     lineHeight: '20px',
+                    textTransform: 'capitalize',
                     height: 'initial',
                     padding: '4px 8px',
                     borderRadius: 'var(--radius-full)',
@@ -154,13 +155,9 @@ export const theme = createTheme({
 
         MuiAutocomplete: {
             styleOverrides: {
-                paper: {
-                    boxShadow: '0px 4px 10px 2px rgba(0, 0, 0, 0.1)',
-                },
-                listbox: {
-                    maxHeight: '300px',
-                },
-            },
+                root: { textTransform: 'capitalize' },
+                paper: { textTransform: 'capitalize' },
+            }
         },
     },
 });
