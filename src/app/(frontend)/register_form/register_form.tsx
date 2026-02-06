@@ -27,6 +27,7 @@ import type { SearchResponse } from '@/app/api/search/route';
 import SuccessDialog from '../success_dialog/success_dialog';
 import PokemonDetails from '../pokemon_details/pokemon_details';
 import { fetcher } from '@/utils/fetcher';
+import DateElement from './DateElement';
 
 const DEFAULT_VALUES = {
     name: '',
@@ -44,10 +45,11 @@ const DEFAULT_VALUES = {
  * - Submits using the server action `submit` and shows `SuccessDialog` on success.
  *
  * Props:
- * @param {{ header: React.ReactNode }} props.header - content shown in the header (e.g. current date).
+ * @param {{ dateElement: React.ReactNode }} props.dateElement - content shown in the header (e.g. current date),
+ * it utilizes a server side fetch, for which we don't want the entire form to wait
  * @returns {JSX.Element}
  */
-export default function RegisterForm({ header }: { header: React.ReactNode }) {
+export default function RegisterForm({ dateElement }: { dateElement: React.ReactNode }) {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [query, setQuery] = React.useState<string | undefined>(undefined);
     const debouncedSetQuery = React.useMemo(() => debounce(setQuery, 200), []);
@@ -105,7 +107,13 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
         <>
             <Card sx={{ maxWidth: 544, padding: { xs: '16px', md: '32px' } }}>
                 <CardHeader
-                    title={<P sx={{ fontSize: '12px', textAlign: 'right' }}>{header}</P>}
+                    title={
+                        <P sx={{ fontSize: '12px', textAlign: 'right' }}>
+                            <React.Suspense fallback="Fetching date...">
+                                {dateElement}
+                            </React.Suspense>
+                        </P>
+                    }
                     sx={{ padding: 0 }}
                 />
                 <form onSubmit={handleSubmit(onSubmit)}>

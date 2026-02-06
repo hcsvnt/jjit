@@ -6,7 +6,7 @@ const withBundleAnalyzer = initializeBundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
-    output: 'standalone', // for docker deployment
+    output: !process.env.SERVER_URL?.includes('localhost') ? 'standalone' : undefined,
     reactProductionProfiling: false,
     reactStrictMode: true,
     images: {

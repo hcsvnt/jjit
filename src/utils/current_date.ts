@@ -30,11 +30,10 @@ export default async function getCurrentDate(): Promise<string> {
         const response = await fetch(url, { cache: 'no-store' });
         const data: TimeApiResponse = await response.json();
         const { dayOfWeek, date } = data;
+
         return `${dayOfWeek}, ${date.replaceAll('/', '.')}`;
     } catch (error) {
         console.error('Error fetching current date:', error);
         return 'Date unavailable';
     }
 }
-
-// todo: add tests
