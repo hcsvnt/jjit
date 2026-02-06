@@ -46,7 +46,6 @@ export default function Home() {
                     <TextField
                         label="Label"
                         helperText="Helper text"
-                        // error={true}
                         placeholder="Enter some text"
                     />
                 </Variant>
@@ -71,7 +70,7 @@ export default function Home() {
                         renderInput={(params) => (
                             <TextField {...params} label="Label" placeholder="Choose an option" />
                         )}
-                        onChange={(event, value) => console.log('Selected:', value)}
+                        onChange={(_, value) => console.log('Selected:', value)}
                     />
                 </Variant>
             </Component>

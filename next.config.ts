@@ -6,7 +6,7 @@ const withBundleAnalyzer = initializeBundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
-    output: "standalone", // for docker deployment
+    output: 'standalone', // for docker deployment
     reactProductionProfiling: false,
     reactStrictMode: true,
     images: {

@@ -1,5 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import { he } from 'zod/locales';
 
 declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {

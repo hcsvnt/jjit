@@ -153,11 +153,11 @@ export async function readPokemonJSON(path: string): Promise<PokemonJSON['data']
         const dataJSON: PokemonJSON = JSON.parse(data);
 
         if (!dataJSON.data || !Array.isArray(dataJSON.data)) {
-            throw new Error('Invalid JSON structure in ' + path);
+            throw new Error(`Invalid JSON structure in ${path}`);
         }
 
         return dataJSON.data;
     } catch (e) {
-        throw new Error('Error parsing JSON from ' + path + ': ' + (e as Error).message);
+        throw new Error(`Error parsing JSON from ${path}: ${(e as Error).message}`);
     }
 }
