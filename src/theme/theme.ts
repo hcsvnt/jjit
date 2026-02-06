@@ -147,6 +147,7 @@ export const theme = createTheme({
                     'p.MuiFormHelperText-root': {
                         position: 'absolute', // prevent layout shift, shouldn't collide
                         top: '100%',
+                        lineHeight: '1em',
                         marginLeft: 0,
                         color: colors.error,
                     },

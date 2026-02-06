@@ -38,9 +38,11 @@ export default function PokemonDetails({ pokemonId }: { pokemonId: number }) {
     const { name, types, base_experience, id, sprites } = data;
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 'min(24px, 0.25em)' }}>
             {sprites?.front_default && (
-                <Image src={sprites.front_default} alt={name} width={195} height={195} />
+                <Box sx={{ position: 'relative', width: 'min(195px, 40vw)', aspectRatio: '1' }}>
+                    <Image src={sprites.front_default} alt={name} fill />
+                </Box>
             )}
             <List>
                 <ListItem sx={{ textTransform: 'capitalize' }}>Name: {name}</ListItem>

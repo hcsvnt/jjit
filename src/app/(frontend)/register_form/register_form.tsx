@@ -103,7 +103,7 @@ export default function RegisterForm({ header }: { header: React.ReactNode }) {
 
     return (
         <>
-            <Card sx={{ maxWidth: 544, padding: '32px' }}>
+            <Card sx={{ maxWidth: 544, padding: { xs: '16px', md: '32px' } }}>
                 <CardHeader
                     title={<P sx={{ fontSize: '12px', textAlign: 'right' }}>{header}</P>}
                     sx={{ padding: 0 }}
