@@ -8,6 +8,14 @@ const withBundleAnalyzer = initializeBundleAnalyzer({
 const nextConfig: NextConfig = {
     reactProductionProfiling: false,
     reactStrictMode: true,
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'raw.githubusercontent.com',
+            },
+        ],
+    },
 };
 
 export default withBundleAnalyzer(nextConfig);

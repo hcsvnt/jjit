@@ -8,7 +8,7 @@ export default function Button({
 }: {
     children: React.ReactNode;
     type?: 'button' | 'submit' | 'reset';
-    onClick: () => void;
+    onClick?: () => void;
     variant?: 'primary' | 'soft';
 }) {
     return (

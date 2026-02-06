@@ -8,6 +8,11 @@ import NodeCache from 'node-cache';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
+export type SearchResponse = {
+    name: string;
+    id: number;
+}[]
+
 /**
  * Build the fuse and cache instances at module level.
  */
@@ -24,13 +29,12 @@ const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
  * @returns A NextResponse containing the search results or an error message.
  */
 export async function POST(request: NextRequest) {
-
     try {
         const body = await request.json();
         const query = getValidatedInput(body);
         const results = getPokemons(query, pokeFuse, cache);
 
-        return NextResponse.json({ results }, { status: 200 });
+        return NextResponse.json(results, { status: 200 });
     } catch (err) {
         if (err instanceof ZodError) {
             return NextResponse.json({ errors: err.issues }, { status: 400 });

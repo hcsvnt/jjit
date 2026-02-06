@@ -44,7 +44,7 @@ export async function submit(
      * sending confirmation emails, etc.
      */
     (function doBusinessLogic(data: FormSubmission) {
-        console.log('Processing submission for:', data);
+        console.log('Doing business with:', data);
     })(validatedData.data);
 
     return {
