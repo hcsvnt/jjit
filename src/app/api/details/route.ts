@@ -109,7 +109,3 @@ function getValidatedInput(input: unknown): number {
     }
     return validatedData.data.pokemon;
 }
-
-export { fetchDetails, getValidatedInput };
-
-export { getDetails, getCachedDetails, setCachedDetails };
