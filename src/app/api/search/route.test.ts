@@ -139,9 +139,8 @@ describe('Route /api/search', () => {
             expect(response.status).toBe(200);
 
             const body = await response.json();
-            expect(body).toHaveProperty('results');
-            expect(Array.isArray(body.results)).toBe(true);
-            expect(body.results.some((p: { name: string }) => p.name === 'Pikachu')).toBe(true);
+            expect(Array.isArray(body)).toBe(true);
+            expect(body.some((p: { name: string }) => p.name === 'Pikachu')).toBe(true);
         });
 
         it('returns 400 with zod issues for invalid payload', async () => {

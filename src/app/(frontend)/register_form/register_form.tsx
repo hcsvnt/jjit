@@ -24,8 +24,8 @@ import { P } from '@/components/typography';
 import TextField from '@/components/text_field';
 import { submit } from './submit';
 import type { SearchResponse } from '@/app/api/search/route';
-import SuccessDialog from './success_dialog';
-import PokemonDetails from './pokemon_details';
+import SuccessDialog from '../success_dialog/success_dialog';
+import PokemonDetails from '../pokemon_details/pokemon_details';
 import { fetcher } from '@/utils/fetcher';
 
 const DEFAULT_VALUES = {

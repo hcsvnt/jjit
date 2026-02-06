@@ -79,7 +79,7 @@ describe('Register Form submit (server action)', () => {
         const result = await submit(prevState, formData);
 
         expect(result.success).toBe(true);
-        expect(consoleSpy).toHaveBeenCalledWith('Processing submission for:', MOCKS.valid);
+        expect(consoleSpy).toHaveBeenCalledWith('Doing business with:', MOCKS.valid);
 
         consoleSpy.mockRestore();
     });

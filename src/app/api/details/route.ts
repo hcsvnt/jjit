@@ -16,7 +16,6 @@ const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
  * @returns A NextResponse containing the Pokémon details or an error message.
  */
 export async function POST(request: NextRequest) {
-    console.log({ request });
     try {
         const body = await request.json();
         const pokemon = getValidatedInput(body);

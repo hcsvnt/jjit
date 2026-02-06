@@ -187,7 +187,7 @@ describe('Route /api/details', () => {
             expect(response.status).toBe(200);
 
             const body = await response.json();
-            expect(body).toEqual({ pokemon: mockPokemon });
+            expect(body).toEqual(mockPokemon);
             expect(fetchMock).toHaveBeenCalledWith('https://pokeapi.co/api/v2/pokemon/25');
         });
 
@@ -206,12 +206,11 @@ describe('Route /api/details', () => {
 
             const response1 = await POST(request);
             expect(response1.status).toBe(200);
-            await expect(response1.json()).resolves.toEqual({ pokemon: mockPokemon });
+            await expect(response1.json()).resolves.toEqual(mockPokemon);
 
             const response2 = await POST(request);
             expect(response2.status).toBe(200);
-            await expect(response2.json()).resolves.toEqual({ pokemon: mockPokemon });
-
+            await expect(response2.json()).resolves.toEqual(mockPokemon);
             expect(fetchMock).toHaveBeenCalledTimes(1);
             expect(fetchMock).toHaveBeenCalledWith('https://pokeapi.co/api/v2/pokemon/26');
         });
