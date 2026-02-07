@@ -1,16 +1,28 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import NodeCache from 'node-cache';
-import { ZodError } from 'zod';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
+import { ZodError } from 'zod';
+import NodeCache from 'node-cache';
 import { SAMPLE_POKEMON_DATA } from '@/tests/utils';
+import { POST } from './route';
+import {
+    createPokeFuse,
+    getCachedPokemons,
+    getPokemons,
+    getValidatedInput,
+    readPokemonJSON,
+    setCachedPokemons,
+} from './utils';
 
-const mockReadFile = vi.fn();
+
+const mockReadFile = vi.hoisted(() => vi.fn(() =>
+    Promise.resolve(JSON.stringify({ data: SAMPLE_POKEMON_DATA }))
+));
 
 vi.mock('node:fs/promises', async (importOriginal) => {
     const actual = await importOriginal<typeof import('node:fs/promises')>();
     const merged = {
         ...actual,
-        readFile: (...args: unknown[]) => mockReadFile(...args),
+        readFile: mockReadFile,
     };
     return {
         __esModule: true,
@@ -19,24 +31,11 @@ vi.mock('node:fs/promises', async (importOriginal) => {
     };
 });
 
-type RouteModule = typeof import('./route');
 
-async function loadRouteModule(
-    pokemonJsonData: Array<{ id: number; name: string }> = [],
-): Promise<RouteModule> {
-    mockReadFile.mockResolvedValue(JSON.stringify({ data: pokemonJsonData }));
-    vi.resetModules();
-    const mod = await import('./route');
-    mockReadFile.mockClear();
-    return mod;
-}
+
+
 
 describe('Route /api/search', () => {
-    let route: RouteModule;
-
-    beforeEach(async () => {
-        route = await loadRouteModule(SAMPLE_POKEMON_DATA);
-    });
 
     afterEach(() => {
         vi.restoreAllMocks();
@@ -45,29 +44,29 @@ describe('Route /api/search', () => {
 
     describe('helpers', () => {
         it('getValidatedInput returns trimmed pokemon string', () => {
-            expect(route.getValidatedInput({ pokemon: '  Pikachu  ' })).toBe('Pikachu');
+            expect(getValidatedInput({ pokemon: '  Pikachu  ' })).toBe('Pikachu');
         });
 
         it('getValidatedInput throws ZodError on invalid input', () => {
-            expect(() => route.getValidatedInput({ pokemon: '' })).toThrow(ZodError);
-            expect(() => route.getValidatedInput({})).toThrow(ZodError);
+            expect(() => getValidatedInput({ pokemon: '' })).toThrow(ZodError);
+            expect(() => getValidatedInput({})).toThrow(ZodError);
         });
 
-        it('createPokeFuse + getSearchedPokemons finds by name', () => {
-            const fuse = route.createPokeFuse(SAMPLE_POKEMON_DATA);
-            const results = route.getSearchedPokemons('Pika', fuse);
+        it('createPokeFuse finds pokemon by name', () => {
+            const fuse = createPokeFuse(SAMPLE_POKEMON_DATA);
+            const results = fuse.search('Pika');
             expect(results.length).toBeGreaterThan(0);
-            expect(results[0]?.name).toBe('Pikachu');
+            expect(results[0]?.item?.name).toBe('Pikachu');
         });
 
         it('getCachedPokemons returns null on miss and data on hit', () => {
             const cache = new NodeCache({ stdTTL: 60 });
             const query = 'Pikachu';
-            expect(route.getCachedPokemons(query, cache)).toBeNull();
+            expect(getCachedPokemons(query, cache)).toBeNull();
 
             const value = [{ id: 25, name: 'Pikachu' }];
             cache.set(query, value);
-            expect(route.getCachedPokemons(query, cache)).toEqual(value);
+            expect(getCachedPokemons(query, cache)).toEqual(value);
         });
 
         it('setCachedPokemons stores data in cache', () => {
@@ -75,17 +74,17 @@ describe('Route /api/search', () => {
             const query = 'Bulbasaur';
             const value = [{ id: 1, name: 'Bulbasaur' }];
 
-            route.setCachedPokemons(query, value, cache);
+            setCachedPokemons(query, value, cache);
             expect(cache.get(query)).toEqual(value);
         });
 
         it('getPokemons uses cache on second call (no extra Fuse search)', () => {
             const cache = new NodeCache({ stdTTL: 60 });
-            const fuse = route.createPokeFuse(SAMPLE_POKEMON_DATA);
+            const fuse = createPokeFuse(SAMPLE_POKEMON_DATA);
             const searchSpy = vi.spyOn(fuse, 'search');
 
-            const first = route.getPokemons('Pika', fuse, cache);
-            const second = route.getPokemons('Pika', fuse, cache);
+            const first = getPokemons('Pika', fuse, cache);
+            const second = getPokemons('Pika', fuse, cache);
 
             expect(first).toEqual(second);
             expect(searchSpy).toHaveBeenCalledTimes(1);
@@ -98,9 +97,9 @@ describe('Route /api/search', () => {
 
             const fuseStub = {
                 search: vi.fn(() => [{ item: { id: 999, name: 'ShouldNotBeUsed' } }]),
-            } as unknown as ReturnType<RouteModule['createPokeFuse']>;
+            } as unknown as ReturnType<typeof createPokeFuse>;
 
-            const results = route.getPokemons('Charmander', fuseStub, cache);
+            const results = getPokemons('Charmander', fuseStub, cache);
             expect(results).toEqual(cachedValue);
             expect(fuseStub.search as unknown as ReturnType<typeof vi.fn>).not.toHaveBeenCalled();
         });
@@ -109,20 +108,20 @@ describe('Route /api/search', () => {
             mockReadFile.mockResolvedValueOnce(
                 JSON.stringify({ data: [{ id: 25, name: 'Pikachu' }] }),
             );
-            const data = await route.readPokemonJSON('/fake/pokemon.json');
+            const data = await readPokemonJSON('/fake/pokemon.json');
             expect(data).toEqual([{ id: 25, name: 'Pikachu' }]);
         });
 
         it('readPokemonJSON rejects invalid structure', async () => {
             mockReadFile.mockResolvedValueOnce(JSON.stringify({ nope: [] }));
-            await expect(route.readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(
+            await expect(readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(
                 /Invalid JSON structure/,
             );
         });
 
         it('readPokemonJSON rejects invalid JSON', async () => {
             mockReadFile.mockResolvedValueOnce('{');
-            await expect(route.readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(
+            await expect(readPokemonJSON('/fake/pokemon.json')).rejects.toThrow(
                 /Error parsing JSON/,
             );
         });
@@ -135,7 +134,7 @@ describe('Route /api/search', () => {
                 body: JSON.stringify({ pokemon: 'pikachu' }),
                 headers: { 'Content-Type': 'application/json' },
             });
-            const response = await route.POST(request);
+            const response = await POST(request);
             expect(response.status).toBe(200);
 
             const body = await response.json();
@@ -150,7 +149,7 @@ describe('Route /api/search', () => {
                 headers: { 'Content-Type': 'application/json' },
             });
 
-            const response = await route.POST(request);
+            const response = await POST(request);
             expect(response.status).toBe(400);
 
             const body = await response.json();
@@ -166,7 +165,7 @@ describe('Route /api/search', () => {
                 headers: { 'Content-Type': 'application/json' },
             });
 
-            const response = await route.POST(request);
+            const response = await POST(request);
             expect(response.status).toBe(500);
 
             const body = await response.json();

@@ -3,14 +3,14 @@ import { ZodError } from 'zod';
 import { NextRequest } from 'next/server';
 import NodeCache from 'node-cache';
 import { MOCK_POKEMON } from '@/tests/utils';
+import { POST } from './route';
 import {
     fetchDetails,
     getCachedDetails,
     getDetails,
     getValidatedInput,
-    POST,
     setCachedDetails,
-} from './route';
+} from './utils';
 
 describe('Route /api/details', () => {
     describe('getValidatedInput', () => {
