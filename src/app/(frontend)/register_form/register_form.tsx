@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { z } from 'zod';
-import { Box, Card, CardContent, CardActions, CardHeader } from '@mui/material';
+import { Box, Card, CardContent, CardActions, CardHeader, CircularProgress } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -18,6 +18,8 @@ import SuccessDialog from '../success_dialog/success_dialog';
 import PokemonDetails from '../pokemon_details/pokemon_details';
 
 import PokemonAutocomplete from '@/components/pokemon_autocomplete';
+import { theme } from '@/theme/theme';
+import ErrorBoundary from '../error_boundary';
 
 const DEFAULT_VALUES = {
     name: '',
@@ -161,7 +163,17 @@ export default function RegisterForm({ dateElement }: { dateElement: React.React
                                     justifyContent: 'center',
                                 }}
                             >
-                                <PokemonDetails pokemonId={watch('pokemon')} />
+                                <ErrorBoundary
+                                    fallback={
+                                        <P sx={{ color: theme.palette.error.main }}>
+                                            Sorry, failed to load the pokemon details.
+                                        </P>
+                                    }
+                                >
+                                    <React.Suspense fallback={<CircularProgress />}>
+                                        <PokemonDetails pokemonId={watch('pokemon')} />
+                                    </React.Suspense>
+                                </ErrorBoundary>
                             </CardContent>
                         </Card>
                     </CardContent>

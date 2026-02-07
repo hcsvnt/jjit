@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, CircularProgress, Alert, Chip } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import Image from 'next/image';
 import useSWR from 'swr';
 import type { Pokemon } from '@/types';
@@ -19,17 +19,11 @@ import { fetcher } from '@/utils/fetcher';
  * @returns {JSX.Element}
  */
 export default function PokemonDetails({ pokemonId }: { pokemonId: number }) {
-    const { data, error, isLoading } = useSWR(pokemonId ? [`/api/details`, pokemonId] : null, () =>
-        fetcher<Pokemon>(`/api/details`, { pokemon: pokemonId }),
+    const { data } = useSWR(
+        pokemonId ? ['/api/details', pokemonId] : null,
+        () => fetcher<Pokemon>(`/api/details`, { pokemon: pokemonId }),
+        { suspense: true },
     );
-
-    if (isLoading) {
-        return <CircularProgress />;
-    }
-
-    if (error) {
-        return <Alert severity="error">Failed to load Pokémon details.</Alert>;
-    }
 
     if (!data) {
         return <P sx={{ color: theme.palette.grey[200] }}>Your pokemon</P>;
