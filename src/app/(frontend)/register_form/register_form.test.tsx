@@ -29,7 +29,7 @@ vi.mock('../success_dialog/success_dialog', () => ({
 const renderForm = () =>
     render(
         <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
-            <RegisterForm header={<span>Feb 6, 2026</span>} />
+            <RegisterForm dateElement={<span>Feb 6, 2026</span>} />
         </SWRConfig>,
     );
 

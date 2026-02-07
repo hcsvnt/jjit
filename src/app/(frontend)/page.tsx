@@ -1,8 +1,11 @@
 export const dynamic = 'force-dynamic';
 
+import { theme } from '@/theme/theme';
+import ErrorBoundary from './error_boundary';
 import styles from './page.module.css';
 import DateElement from './register_form/DateElement';
 import RegisterForm from './register_form/register_form';
+import { P } from '@/components/typography';
 
 /**
  * Home (server component)
@@ -21,7 +24,17 @@ import RegisterForm from './register_form/register_form';
 export default async function Home() {
     return (
         <main className={styles.main}>
-            <RegisterForm dateElement={<DateElement />} />
+            <ErrorBoundary
+                fallback={
+                    <P sx={{ color: theme.palette.error.main }}>
+                        Sorry, an unexpected error occurred.
+                        <br />
+                        Reload the page to try again.
+                </P>
+                }
+            >
+                <RegisterForm dateElement={<DateElement />} />
+            </ErrorBoundary>
         </main>
     );
 }
