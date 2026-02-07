@@ -2,7 +2,7 @@ import { ZodError } from 'zod';
 import { schema } from './schema';
 import type { PokemonJSON } from '@/types';
 import Fuse from 'fuse.js';
-import NodeCache from 'node-cache';
+import type NodeCache from 'node-cache';
 import { readFile } from 'node:fs/promises';
 
 export type SearchResponse = {

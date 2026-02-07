@@ -7,7 +7,6 @@ import { getDetails, getValidatedInput } from './utils';
 const CACHE_TTL = 60 * 60 * 24 * 7;
 const cache = new NodeCache({ stdTTL: CACHE_TTL, checkperiod: CACHE_TTL / 2 });
 
-
 /**
  * Handles POST requests to fetch detailed information about a Pokémon.
  * Returns cached data if available.

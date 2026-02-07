@@ -13,10 +13,9 @@ import {
     setCachedPokemons,
 } from './utils';
 
-
-const mockReadFile = vi.hoisted(() => vi.fn(() =>
-    Promise.resolve(JSON.stringify({ data: SAMPLE_POKEMON_DATA }))
-));
+const mockReadFile = vi.hoisted(() =>
+    vi.fn(() => Promise.resolve(JSON.stringify({ data: SAMPLE_POKEMON_DATA }))),
+);
 
 vi.mock('node:fs/promises', async (importOriginal) => {
     const actual = await importOriginal<typeof import('node:fs/promises')>();
@@ -31,12 +30,7 @@ vi.mock('node:fs/promises', async (importOriginal) => {
     };
 });
 
-
-
-
-
 describe('Route /api/search', () => {
-
     afterEach(() => {
         vi.restoreAllMocks();
         mockReadFile.mockReset();

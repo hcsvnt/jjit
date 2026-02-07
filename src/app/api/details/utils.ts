@@ -1,8 +1,7 @@
-
 import { ZodError } from 'zod';
 import type { Pokemon } from '@/types';
 import { schema } from './schema';
-import NodeCache from 'node-cache';
+import type NodeCache from 'node-cache';
 
 /**
  * Fetches detailed information about a Pokémon from the PokeAPI.
